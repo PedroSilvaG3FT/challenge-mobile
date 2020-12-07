@@ -1,10 +1,14 @@
-import { StatusBar } from 'expo-status-bar';
+import 'react-native-gesture-handler';
 import React from 'react';
+
+import Navigation from './src/navigation';
+import useColorScheme from './src/hooks/useColorScheme';
+import useCachedResources from './src/hooks/useCachedResources';
+
+import { StatusBar } from "react-native";
+import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import useCachedResources from './hooks/useCachedResources';
-import useColorScheme from './hooks/useColorScheme';
-import Navigation from './navigation';
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
@@ -15,8 +19,12 @@ export default function App() {
   } else {
     return (
       <SafeAreaProvider>
+        <StatusBar
+          backgroundColor="transparent"
+          translucent
+          barStyle="dark-content"
+        />
         <Navigation colorScheme={colorScheme} />
-        <StatusBar />
       </SafeAreaProvider>
     );
   }
