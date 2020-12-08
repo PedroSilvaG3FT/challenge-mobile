@@ -1,16 +1,16 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Text, View } from '../../components/Themed';
 import { StyleSheet } from 'react-native'
 import { RectButton } from 'react-native-gesture-handler';
 import Colors from '../../constants/Colors';
 
-import AuthContext from '../../contexts/auth';
+import { useAuth } from '../../contexts/auth';
 
 const Login: React.FC = () => {
-  const { signed, signIn } = useContext(AuthContext);
-  
+  const { signed, signIn } = useAuth();
+
   console.log("LOGADO ? ", signed);
-  
+
   function handleSingin() {
     signIn({ username: '', password: '' });
   }

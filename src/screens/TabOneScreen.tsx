@@ -4,10 +4,10 @@ import { RectButton } from 'react-native-gesture-handler';
 
 import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
-import AuthContext from '../contexts/auth';
+import { useAuth } from '../contexts/auth';
 
 export default function TabOneScreen() {
-  const { signOut } = useContext(AuthContext);
+  const { signOut } = useAuth();
 
   function handleSingOut() {
     signOut();
