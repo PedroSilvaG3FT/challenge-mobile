@@ -1,13 +1,26 @@
-export default function singIn() {
+interface ResponseToken {
+    token: string;
+    user: {
+        id: number,
+        role: string;
+        username: string;
+        password: string;
+    };
+}
+
+
+export function singIn(): Promise<ResponseToken> {
     return new Promise((resolve) => {
         setTimeout(() => {
             resolve({
                 token: 'kjdhfkjsfkjsdhfkshdfse9fi238runef',
                 user: {
-                    name: 'Pedro Silva',
-                    email: 'pedro.silva@teste.com'
+                    id: 1,
+                    role: '',
+                    username: 'Pedro Silva',
+                    password: '12345'
                 }
             })
-        }, 2000);
+        }, 1000);
     })
 }
