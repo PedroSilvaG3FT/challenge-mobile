@@ -1,73 +1,116 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Feather as Icon } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as React from 'react';
 
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
-import TabOneScreen from '../screens/TabOneScreen';
-import TabTwoScreen from '../screens/TabTwoScreen';
-import { BottomTabParamList, TabOneParamList, TabTwoParamList } from '../../types';
+import { BottomTabParamList, TabMemberGroupParamList, TabMemberParamList, TabSettingsParamList, TabTipsNewsParamList } from '../../types';
+
+import Member from '../screens/Member';
+import MemberGroup from '../screens/MemberGroup';
+import TipsNews from '../screens/TipsNews';
+import Settings from '../screens/Settings';
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 
 export default function BottomTabNavigator() {
   const colorScheme = useColorScheme();
+  const sizeIconDefault = 20;
 
   return (
     <BottomTab.Navigator
-      initialRouteName="TabOne"
-      tabBarOptions={{ activeTintColor: Colors[colorScheme].tint }}>
+      initialRouteName="TabMember"
+      tabBarOptions={{ activeTintColor: Colors.colorPrimary }}>
       <BottomTab.Screen
-        name="TabOne"
-        component={TabOneNavigator}
+        name="TabMember"
+        component={TabMemberNavigator}
         options={{
-          tabBarIcon: ({ color }) => <TabBarIcon name="ios-code" color={color} />,
+          tabBarLabel: "Eu",
+          tabBarIcon: ({ color }) => (<Icon name="user" size={sizeIconDefault} color={color} />),
         }}
       />
       <BottomTab.Screen
-        name="TabTwo"
-        component={TabTwoNavigator}
+        name="TabMemberGroup"
+        component={TabMemberGroupNavigator}
         options={{
-          tabBarIcon: ({ color }) => <TabBarIcon name="ios-code" color={color} />,
+          tabBarLabel: "Grupo",
+          tabBarIcon: ({ color }) => <Icon name="users" size={sizeIconDefault} color={color} />,
+        }}
+      />
+      <BottomTab.Screen
+        name="TabTipsNews"
+        component={TabTipsNewsNavigator}
+        options={{
+          tabBarLabel: "Dicas/Noticias",
+          tabBarIcon: ({ color }) => <Icon name="book-open" size={sizeIconDefault} color={color} />,
+        }}
+      />
+      <BottomTab.Screen
+        name="TabSettings"
+        component={TabSettingsNavigator}
+        options={{
+          tabBarLabel: "Configurações",
+          tabBarIcon: ({ color }) => <Icon name="list" size={sizeIconDefault} color={color} />,
         }}
       />
     </BottomTab.Navigator>
   );
 }
 
-// You can explore the built-in icon families and icons on the web at:
-// https://icons.expo.fyi/
-function TabBarIcon(props: { name: string; color: string }) {
-  return <Ionicons size={30} style={{ marginBottom: -3 }} {...props} />;
-}
+const TabMemberStack = createStackNavigator<TabMemberParamList>();
 
-// Each tab has its own navigation stack, you can read more about this pattern here:
-// https://reactnavigation.org/docs/tab-based-navigation#a-stack-navigator-for-each-tab
-const TabOneStack = createStackNavigator<TabOneParamList>();
-
-function TabOneNavigator() {
+function TabMemberNavigator() {
   return (
-    <TabOneStack.Navigator>
-      <TabOneStack.Screen
-        name="TabOneScreen"
-        component={TabOneScreen}
-        options={{ headerTitle: 'Tab One Title' }}
+    <TabMemberStack.Navigator>
+      <TabMemberStack.Screen
+        name="TabMemberScreen"
+        component={Member}
+        options={{
+          headerShown: false,
+        }}
       />
-    </TabOneStack.Navigator>
+    </TabMemberStack.Navigator>
   );
 }
 
-const TabTwoStack = createStackNavigator<TabTwoParamList>();
+const TabMemberGroupStack = createStackNavigator<TabMemberGroupParamList>();
 
-function TabTwoNavigator() {
+function TabMemberGroupNavigator() {
   return (
-    <TabTwoStack.Navigator>
-      <TabTwoStack.Screen
-        name="TabTwoScreen"
-        component={TabTwoScreen}
+    <TabMemberGroupStack.Navigator>
+      <TabMemberGroupStack.Screen
+        name="TabMemberGroupScreen"
+        component={MemberGroup}
         options={{ headerTitle: 'Tab Two Title' }}
       />
-    </TabTwoStack.Navigator>
+    </TabMemberGroupStack.Navigator>
   );
 }
+
+const TabTipsNewsStack = createStackNavigator<TabTipsNewsParamList>();
+
+function TabTipsNewsNavigator() {
+  return (
+    <TabTipsNewsStack.Navigator>
+      <TabTipsNewsStack.Screen
+        name="TabTipsNewsScreen"
+        component={TipsNews}
+      />
+    </TabTipsNewsStack.Navigator>
+  )
+}
+
+const TabSettingsStack = createStackNavigator<TabSettingsParamList>();
+
+function TabSettingsNavigator() {
+  return (
+    <TabSettingsStack.Navigator>
+      <TabSettingsStack.Screen
+        name="TabSettingsScreen"
+        component={Settings}
+      />
+    </TabSettingsStack.Navigator>
+  )
+}
+

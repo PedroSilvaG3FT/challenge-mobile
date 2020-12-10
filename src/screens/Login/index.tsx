@@ -1,29 +1,44 @@
-import React from 'react';
-import { Text, View } from '../../components/Themed';
-import { StyleSheet } from 'react-native'
-import { RectButton } from 'react-native-gesture-handler';
-import Colors from '../../constants/Colors';
+import React, { useRef } from "react";
+import { Text, View, StyleSheet } from "react-native";
+import { RectButton } from "react-native-gesture-handler";
+import { useAuth } from "../../contexts/auth";
 
-import { useAuth } from '../../contexts/auth';
+import Colors from "../../constants/Colors";
+import { useNavigation } from "@react-navigation/native";
+import { Form } from "@unform/mobile";
+import { FormHandles, SubmitHandler } from "@unform/core";
+import Input from "../../components/form/input";
 
 const Login: React.FC = () => {
-  const { signed, signIn } = useAuth();
+  const { signIn } = useAuth();
+  const formRef = useRef<FormHandles>(null);
+  const navigation = useNavigation();
 
-  console.log("LOGADO ? ", signed);
-
-  function handleSingin() {
-    signIn({ username: '', password: '' });
-  }
+  const handleLogin: SubmitHandler<any> = (data) => {
+    console.log("DATA :", data);
+    signIn(data);
+  };
 
   return (
     <View style={styles.container}>
-      <RectButton style={styles.button} onPress={handleSingin}>
-        <Text style={styles.buttonText}>Entrar</Text>
-      </RectButton>
+      <Form ref={formRef} onSubmit={handleLogin} style={{ width: "100%" }}>
+        <Input name="username" placeholder="Usuário" autoCapitalize="none" />
+        <Input name="password" placeholder="Senha" secureTextEntry={true} autoCapitalize="none" />
 
-      <Text style={styles.singUpText}>
-        Cadastre-se
+        <RectButton
+          style={styles.button}
+          onPress={() => formRef.current?.submitForm()}
+        >
+          <Text style={styles.buttonText}>Entrar</Text>
+        </RectButton>
+
+        <Text
+          style={styles.singUpText}
+          onPress={() => navigation.navigate("RegisterUser")}
+        >
+          Cadastre-se
         </Text>
+      </Form>
     </View>
   );
 };
@@ -63,4 +78,5 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
 });
+
 export default Login;
