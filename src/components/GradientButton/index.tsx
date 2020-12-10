@@ -25,7 +25,7 @@ const GradientButton: React.FC<GradientButtonProps> = (props) => {
         width: props.width,
         height: props.height,
         style: props.style,
-        colors: props.colors ? props.colors : [Colors.colorDangerLight, Colors.colorDanger],
+        colors: props.colors ? props.colors : [Colors.colorPrimary, Colors.colorDanger],
         sizeIcon: props.sizeIcon ? props.sizeIcon : 24,
         borderRadius: props.borderRadius ? props.borderRadius : 12,
         colorIcon: props.colorIcon ? props.colorIcon : Colors.colorPrimary,

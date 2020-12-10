@@ -20,7 +20,7 @@ export default function App() {
     return (
       <SafeAreaProvider>
         <StatusBar
-          backgroundColor="transparent"
+          backgroundColor="black"
           barStyle="light-content"
           translucent
         />
