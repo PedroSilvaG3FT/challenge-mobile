@@ -51,7 +51,7 @@ const GradientButton: React.FC<GradientButtonProps> = (props) => {
     ]
 
     return (
-        <RectButton style={stylesGroup}>
+        <RectButton style={stylesGroup} onPress={dataButton.onPress}>
             <LinearGradient
                 colors={dataButton.colors}
                 style={[styles.buttonContent, borderRadiusStyle, { height: dataButton.height }]}
