@@ -1,11 +1,15 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Image, StatusBar, StyleSheet } from 'react-native';
 import { Text, View } from '../../components/Themed';
 import Colors from '../../constants/Colors';
 import GradientButton from '../../components/GradientButton';
 import { ScrollView } from 'react-native-gesture-handler';
+import { useNavigation } from '@react-navigation/native';
 
 const Member: React.FC = () => {
+    const navigation = useNavigation();
+
+
     return (
         <ScrollView>
             <View style={styles.container}>
@@ -40,6 +44,7 @@ const Member: React.FC = () => {
                     nameIcon="food-fork-drink"
                     width={"auto"}
                     height={60}
+                    onPress={() => navigation.navigate('MenuScreen')}
                 />
 
                 <GradientButton
@@ -75,13 +80,13 @@ const Member: React.FC = () => {
 
                         <View style={styles.summaryItem}>
                             <Text style={styles.summaryItemLabel}> Restam </Text>
-                            <Text style={[styles.summaryItemValue, , { color: Colors.colorDangerLight }]}> 1kg </Text>
+                            <Text style={[styles.summaryItemValue, , { color: Colors.colorDangerLight }]}> 10kg </Text>
                             <Text style={styles.summaryItemLabel}> Para a meta da semana </Text>
                         </View>
 
                         <View style={styles.summaryItem}>
                             <Text style={styles.summaryItemLabel}> Restam </Text>
-                            <Text style={[styles.summaryItemValue, , { color: Colors.colorDanger }]}> 1kg </Text>
+                            <Text style={[styles.summaryItemValue, , { color: Colors.colorDanger }]}> 10kg </Text>
                             <Text style={styles.summaryItemLabel}> Para a meta Final </Text>
                         </View>
                     </View>
@@ -95,7 +100,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         paddingHorizontal: 24,
-        paddingVertical: Number(StatusBar.currentHeight) + 32
+        paddingVertical: Number(StatusBar.currentHeight) + 38
     },
 
     header: {
@@ -112,8 +117,8 @@ const styles = StyleSheet.create({
     avatarImage: {
         width: 100,
         height: 100,
+        marginBottom: 8,
         borderRadius: 50,
-        marginBottom: 8
     },
 
     currentWeightText: {
@@ -134,9 +139,10 @@ const styles = StyleSheet.create({
     summaryBox: {
         marginTop: 12,
         marginHorizontal: 8,
-        backgroundColor: "#1C1C1C",
+        backgroundColor: Colors.bgDarkSecondary,
         borderRadius: 12,
-        padding: 12
+        padding: 12,
+        flex: 1,
     },
 
     summaryLabel: {
@@ -148,17 +154,18 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: 'transparent'
-
+        backgroundColor: 'transparent',
+        flex: 1,
     },
 
     summaryItem: {
-        justifyContent: 'space-around',
+        flex: 1,
+        justifyContent: 'space-evenly',
         alignItems: 'center',
-        width: 100,
-        height: 104,
+        height: 108,
         padding: 8,
-        borderRadius: 8
+        borderRadius: 8,
+        marginHorizontal: 8
     },
 
     summaryItemLabel: {
@@ -166,7 +173,9 @@ const styles = StyleSheet.create({
     },
 
     summaryItemValue: {
-        fontSize: 32
+        fontSize: 28,
+        textAlign: 'center',
+        justifyContent: 'center'
     },
 })
 

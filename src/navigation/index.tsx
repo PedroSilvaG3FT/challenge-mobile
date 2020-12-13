@@ -11,7 +11,7 @@ import {AuthProvider} from "../contexts/auth";
 
 export default function Navigation({ colorScheme, }: { colorScheme: ColorSchemeName; }) {
   let theme = colorScheme === "dark" ? DarkTheme : DefaultTheme;
-  // theme = DefaultTheme;
+  theme = DarkTheme;
 
   return (
     <NavigationContainer linking={LinkingConfiguration} theme={theme}>

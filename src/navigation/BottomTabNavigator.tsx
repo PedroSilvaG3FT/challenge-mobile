@@ -11,6 +11,7 @@ import Member from '../screens/Member';
 import MemberGroup from '../screens/MemberGroup';
 import TipsNews from '../screens/TipsNews';
 import Settings from '../screens/Settings';
+import Menu from '../screens/Menu';
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 
@@ -64,10 +65,18 @@ function TabMemberNavigator() {
   return (
     <TabMemberStack.Navigator>
       <TabMemberStack.Screen
-        name="TabMemberScreen"
+        name="MemberScreen"
         component={Member}
         options={{
           headerShown: false,
+        }}
+      />
+
+      <TabMemberStack.Screen 
+        name="MenuScreen"
+        component={Menu}
+        options={{
+          title: "Cardapio"
         }}
       />
     </TabMemberStack.Navigator>

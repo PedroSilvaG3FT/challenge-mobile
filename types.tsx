@@ -11,7 +11,8 @@ export type BottomTabParamList = {
 };
 
 export type TabMemberParamList = {
-  TabMemberScreen: undefined;
+  MemberScreen: undefined;
+  MenuScreen: undefined;
 };
 
 export type TabMemberGroupParamList = {
