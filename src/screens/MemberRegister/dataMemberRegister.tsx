@@ -7,14 +7,12 @@ import { RectButton } from 'react-native-gesture-handler';
 import { FormHandles, SubmitHandler } from '@unform/core';
 import { UserService } from '../../service/UserService';
 import { useAuth } from '../../contexts/auth';
-import { useNavigation } from '@react-navigation/native';
 
 
 const DataMemberRegister: React.FC = (props: any) => {
     const { signIn } = useAuth();
     const formRef = useRef<FormHandles>(null);
     const userService = new UserService();
-    const navigation = useNavigation();
     const [userRegister, setUserRegister] = useState<any>(null);
 
 
