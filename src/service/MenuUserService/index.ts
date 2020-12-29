@@ -1,17 +1,12 @@
 import api from "../api";
 
-export class UserService {
-
-    getAll() { 
+export class MenuUserService {
+    getAll() {
         return api.get<any>(`user`);
     }
 
     getById(id: number) {
         return api.get<any>(`user/${id}`);
-    }
-
-    getByEmail(email: string) {
-        return api.get<any>(`user/email/${email}`);
     }
 
     create(data: object) {
@@ -21,5 +16,4 @@ export class UserService {
     update(data: object) {
         return api.put('user', data);
     }
-
 }

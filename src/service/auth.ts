@@ -2,7 +2,7 @@ import api from "./api";
 interface ResponseToken {
     data: {
         token: string;
-        userBd: {
+        user: {
             acceptTerm: boolean,
             active: boolean,
             currentStep: any,

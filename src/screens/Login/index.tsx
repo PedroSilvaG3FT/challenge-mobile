@@ -21,7 +21,7 @@ const Login: React.FC = () => {
   return (
     <View style={styles.container}>
       <Form ref={formRef} onSubmit={handleLogin} style={{ width: "100%" }}>
-        <Input name="userName" placeholder="Usuário" autoCapitalize="none" />
+        <Input name="email" placeholder="Usuário" autoCapitalize="none" />
         <Input name="password" placeholder="Senha" secureTextEntry={true} autoCapitalize="none" />
 
         <RectButton
@@ -33,7 +33,7 @@ const Login: React.FC = () => {
 
         <Text
           style={styles.singUpText}
-          onPress={() => navigation.navigate("RegisterUser")}
+          onPress={() => navigation.navigate("EmailMemberRegister")}
         >
           Cadastre-se
         </Text>

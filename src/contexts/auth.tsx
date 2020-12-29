@@ -38,10 +38,11 @@ export const AuthProvider: React.FC = ({ children }) => {
     async function signIn(data: LoginInterface) {
 
         auth.singIn(data).then(
-            response => {
-                const responseData = response.data;
-                setUser(responseData.userBd);
-                AsyncStorage.setItem("@EMAuth:user", JSON.stringify(responseData.userBd));
+            async response => {
+                const responseData = await response.data;
+                console.log(responseData);
+                setUser(responseData.user);
+                AsyncStorage.setItem("@EMAuth:user", JSON.stringify(responseData.user));
                 AsyncStorage.setItem("@EMAuth:token", responseData.token);
             },
             error => {

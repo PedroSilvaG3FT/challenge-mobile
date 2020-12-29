@@ -9,6 +9,7 @@ interface InputProps {
   placeholder?: string;
   secureTextEntry?: boolean;
   style?: object;
+  keyboardType?: "number-pad" | "decimal-pad" | "numeric" | "email-address" | "phone-pad";
   autoCapitalize?: "none" | "sentences" | "words" | "characters" | undefined;
 }
 
@@ -46,6 +47,7 @@ const Input: React.FC<InputProps> = (props) => {
       placeholder={props.placeholder}
       secureTextEntry={props.secureTextEntry}
       onChangeText={(value) => setValue(value)}
+      keyboardType={props.keyboardType}
       autoCapitalize={props.autoCapitalize}
     />
   );
