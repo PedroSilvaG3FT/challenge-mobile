@@ -2,6 +2,7 @@ import React, { createContext, useEffect, useState, useContext } from 'react';
 import LoginInterface from '../interfaces/login.interface';
 import AsyncStorage from '@react-native-community/async-storage';
 import * as auth from "../service/auth";
+import api from "../service/api";
 
 interface AuthContextData {
     signed: boolean;
@@ -22,9 +23,9 @@ export const AuthProvider: React.FC = ({ children }) => {
             const storagedUser = await AsyncStorage.getItem("@EMAuth:user");
             const storagedToken = await AsyncStorage.getItem("@EMAuth:token");
 
-            await new Promise((resolve) => setTimeout(resolve, 2000));
-
             if (storagedUser && storagedToken) {
+                api.defaults.headers["Authorization"] = `Bearer ${storagedToken}`;
+                
                 setUser(JSON.parse(storagedUser));
             }
             
@@ -34,12 +35,20 @@ export const AuthProvider: React.FC = ({ children }) => {
         loadStorageData();
     }, []);
 
-    async function signIn() {
-        const response = await auth.singIn();
+    async function signIn(data: LoginInterface) {
 
-        setUser(response.user);
-        AsyncStorage.setItem("@EMAuth:user", JSON.stringify(response.user));
-        AsyncStorage.setItem("@EMAuth:token", response.token);
+        auth.singIn(data).then(
+            response => {
+                const responseData = response.data;
+                setUser(responseData.userBd);
+                AsyncStorage.setItem("@EMAuth:user", JSON.stringify(responseData.userBd));
+                AsyncStorage.setItem("@EMAuth:token", responseData.token);
+            },
+            error => {
+                console.log("ERRO", error);
+            }
+            
+        );
     }
 
     function signOut() {

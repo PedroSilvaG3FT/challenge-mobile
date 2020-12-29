@@ -9,8 +9,8 @@ export function returnCurrentMenuMember(): MemberMenuInterface {
 
     const menu = {
         id: 1,
-        name: 'Cardapio',
-        qtdDays: 1,
+        name: 'Cardapio Laranja',
+        qtdDays: 8,
         active: true,
         dateCriation: '',
     }
@@ -97,15 +97,18 @@ export function returnCurrentMenuMember(): MemberMenuInterface {
         { id: 30, idDay: 1, numberDay: 8, idMenuItem: 30, dateCriation: '' },
         { id: 31, idDay: 1, numberDay: 8, idMenuItem: 31, dateCriation: '' },
         { id: 32, idDay: 1, numberDay: 8, idMenuItem: 32, dateCriation: '' },
-    ]
+    ];
 
     // --- Logica --- \\
     const menuMemberDTO: MemberMenuInterface = {
         menuId: menu.id,
         menuName: menu.name,
+        qtdDays: menu.qtdDays,
+        menuMemberId: menuMember.id,
         days: []
     }
 
+    // Monta Dias
     const numberDays = menuItemDay.map(itemDay => itemDay.numberDay);
     const numberDayFilter = Array.from(new Set(numberDays)).sort();
 
@@ -120,8 +123,10 @@ export function returnCurrentMenuMember(): MemberMenuInterface {
         }
 
         menuMemberDTO.days.push(newDay);
-    })
+    });
+    // Monta Dias
 
+    // Monta Refeições do Dia
     menuMemberDTO.days.forEach(itemDay => {
         const mealsDay = menuItemDay.filter(x => itemDay.numberDay === x.numberDay);
 
@@ -139,6 +144,7 @@ export function returnCurrentMenuMember(): MemberMenuInterface {
             }
         })
     });
+    // Monta Refeições do Dia
 
     return menuMemberDTO
 }
@@ -146,8 +152,10 @@ export function returnCurrentMenuMember(): MemberMenuInterface {
 
 export interface MemberMenuInterface {
     menuId: number
+    qtdDays: number
     menuName: string,
-    days: DayMenuInterface[]
+    menuMemberId: number,
+    days: DayMenuInterface[],
 }
 
 interface DayMenuInterface {
@@ -156,7 +164,6 @@ interface DayMenuInterface {
     numberDay: number,
     meals: MealInterface[]
 }
-
 interface MealInterface {
     typeMealName: string,
     typeMealId: number,

@@ -6,7 +6,6 @@ import useColorScheme from './src/hooks/useColorScheme';
 import useCachedResources from './src/hooks/useCachedResources';
 
 import { StatusBar } from "react-native";
-import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 

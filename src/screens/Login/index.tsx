@@ -15,14 +15,13 @@ const Login: React.FC = () => {
   const navigation = useNavigation();
 
   const handleLogin: SubmitHandler<any> = (data) => {
-    console.log("DATA :", data);
     signIn(data);
   };
 
   return (
     <View style={styles.container}>
       <Form ref={formRef} onSubmit={handleLogin} style={{ width: "100%" }}>
-        <Input name="username" placeholder="Usuário" autoCapitalize="none" />
+        <Input name="userName" placeholder="Usuário" autoCapitalize="none" />
         <Input name="password" placeholder="Senha" secureTextEntry={true} autoCapitalize="none" />
 
         <RectButton

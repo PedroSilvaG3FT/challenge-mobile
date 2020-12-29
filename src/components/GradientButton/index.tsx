@@ -6,11 +6,11 @@ import { StyleSheet, View, Text } from 'react-native';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 
 interface GradientButtonProps {
-    title: string;
-    colors?: any[]
+    title?: string;
+    colors?: string[];
     style?: object;
     width?: number | string;
-    height?: number;
+    height?: number | string;
     borderRadius?: number;
     sizeIcon?: number;
     nameIcon?: string;
@@ -25,7 +25,7 @@ const GradientButton: React.FC<GradientButtonProps> = (props) => {
         width: props.width,
         height: props.height,
         style: props.style,
-        colors: props.colors ? props.colors : [Colors.colorPrimary, Colors.colorDanger],
+        colors: props.colors?.length ? props.colors : [Colors.colorPrimary, Colors.colorDanger],
         sizeIcon: props.sizeIcon ? props.sizeIcon : 24,
         borderRadius: props.borderRadius ? props.borderRadius : 12,
         colorIcon: props.colorIcon ? props.colorIcon : Colors.colorPrimary,
@@ -58,10 +58,13 @@ const GradientButton: React.FC<GradientButtonProps> = (props) => {
                 start={[0, 1]}
                 end={[1, 0]}
             >
-                <Text style={styles.buttonText}> {dataButton.title} </Text>
+                {dataButton.title ?
+                    <Text style={styles.buttonText}> {dataButton.title} </Text>
+                    : null
+                }
 
                 {dataButton.nameIcon ?
-                    <Icon name={dataButton.nameIcon || ""} size={24} color="#FFFFF0" /> : 
+                    <Icon name={dataButton.nameIcon || ""} size={24} color="#FFFFF0" /> :
                     null
                 }
             </LinearGradient>

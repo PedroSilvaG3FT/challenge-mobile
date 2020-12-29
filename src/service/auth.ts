@@ -1,26 +1,27 @@
+import api from "./api";
 interface ResponseToken {
-    token: string;
-    user: {
-        id: number,
-        role: string;
-        username: string;
-        password: string;
-    };
+    data: {
+        token: string;
+        userBd: {
+            acceptTerm: boolean,
+            active: boolean,
+            currentStep: any,
+            dateCreation: Date | any,
+            email: string,
+            goalWeight: number,
+            height: number,
+            id: number,
+            image: string,
+            isAdm: boolean,
+            name: string,
+            password: string,
+            payday: number,
+            startingWeight: number,
+        }
+    }
 }
 
-
-export function singIn(): Promise<ResponseToken> {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve({
-                token: 'kjdhfkjsfkjsdhfkshdfse9fi238runef',
-                user: {
-                    id: 1,
-                    role: '',
-                    username: 'Pedro Silva',
-                    password: '12345'
-                }
-            })
-        }, 1000);
-    })
+export function singIn(userLogin: any): Promise<ResponseToken> {
+    // console.log("userLogin :", userLogin);
+    return api.post('autentication', userLogin);
 }
