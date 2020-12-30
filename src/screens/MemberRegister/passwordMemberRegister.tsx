@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Text, View, Image, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, Image } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import { FormHandles, SubmitHandler } from '@unform/core';
 import { Form } from '@unform/mobile';
@@ -7,46 +7,44 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import Input from '../../components/form/input';
 import Colors from '../../constants/Colors';
 
-const NameMemberRegister: React.FC = (props: any) => {
+const PasswordMemberRegister: React.FC = (props: any) => {
   const formRef = useRef<FormHandles>(null);
   const navigation = useNavigation();
   const [currentProps, setProps] = useState<object>({});
 
   useEffect(() => {
     const params = props.route.params;
-    console.log(3, params);
+    console.log(2, params);
     setProps(params)
-  },[])
+  }, [])
 
   const handleConfirm: SubmitHandler<any> = (data) => {
+    const password = data.password;
+    const passwordConfirm = data.passwordConfirm;
 
-    const newParams = {
-      ...currentProps,
-      name: data.name,
-      cpf: data.cpf,
-      age: data.age,
-      phoneNumber: data.phoneNumber
-    };
-    
-    navigation.navigate("DataMemberRegister", newParams);
+    if (password != passwordConfirm) {
+      console.log("As senhas não batem mano");
+      return;
+    }
+
+    const newParams = { ...currentProps, password}
+    navigation.navigate("NameMemberRegister", newParams);
   };
-  
+
   return (
     <View style={styles.container}>
       <View style={styles.boxImage}>
         <Image
           style={styles.iconImage}
-          source={require("../../../assets/icons/blog.png")}
+          source={require("../../../assets/icons/security.png")}
         />
 
-        <Text style={styles.boxImageText}>Insira os seus dados pessoais</Text>
+        <Text style={styles.boxImageText}>Configure uma senha de acesso</Text>
       </View>
 
       <Form ref={formRef} onSubmit={handleConfirm} style={{ width: "100%" }}>
-        <Input name="name" placeholder="Nome" autoCapitalize="none" />
-        <Input name="cpf" placeholder="CPF" keyboardType="number-pad"/>
-        <Input name="age" placeholder="Idade" keyboardType="numeric" />
-        <Input name="phoneNumber" placeholder="Telefone" keyboardType="phone-pad" autoCapitalize="none" />
+        <Input name="password" placeholder="Crie sua senha" secureTextEntry={true} autoCapitalize="none" />
+        <Input name="passwordConfirm" placeholder="Confirme a senha" secureTextEntry={true} autoCapitalize="none" />
 
         <TouchableOpacity
           style={styles.button}
@@ -104,4 +102,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default NameMemberRegister
+export default PasswordMemberRegister

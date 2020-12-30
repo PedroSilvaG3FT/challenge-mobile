@@ -5,10 +5,21 @@ import Colors from '../../constants/Colors';
 import GradientButton from '../../components/GradientButton';
 import { ScrollView } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-community/async-storage';
+import MemberInterface from '../../interfaces/member.interface'
 
 const Member: React.FC = () => {
     const navigation = useNavigation();
+    const [user, setUser] = useState<MemberInterface>({} as MemberInterface);
 
+    useEffect(() => {
+        getUserInfo()
+    },[])
+    
+    async function getUserInfo() {
+        const storagedUser: string = await AsyncStorage.getItem("@EMAuth:user") as string;
+        setUser(JSON.parse(storagedUser));
+    }
 
     return (
         <ScrollView>
@@ -28,7 +39,7 @@ const Member: React.FC = () => {
                             }}
                         />
 
-                        <Text>Olá Pedro, o seu peso atual é:</Text>
+                        <Text>Olá {user?.name}, o seu peso atual é:</Text>
                         <Text style={styles.currentWeightText}>76kg</Text>
                     </View>
 
