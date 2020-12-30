@@ -1,4 +1,5 @@
-import React, { useEffect, useRef } from 'react';
+import AsyncStorage from '@react-native-community/async-storage';
+import React, { useEffect, useRef, useState } from 'react';
 import { Dimensions, StatusBar, StyleSheet } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Modalize } from 'react-native-modalize';
@@ -6,15 +7,18 @@ import GradientButton from '../../components/GradientButton';
 import MenuImagesModal from '../../components/modals/MenuImages';
 import { Text, View } from '../../components/Themed';
 import Colors from '../../constants/Colors';
-import { returnCurrentMenuMember } from './fakeResultApi'
+import MemberInterface from '../../interfaces/member.interface';
+import { MenuUserService } from '../../service/MenuUserService';
+import { MemberMenuInterface, returnCurrentMenuMember } from './fakeResultApi'
 
 
 const Menu: React.FC = () => {
-    // const [menuMember, setMenuMember] = useState({} as MemberMenuInterface);
+    const [menuMember, setMenuMember] = useState({} as MemberMenuInterface);
+    const menuUserService = new MenuUserService();
     const modalizeRef = useRef<Modalize>(null);
     const windowHeight = Dimensions.get("window").height;
 
-    const menuMember = returnCurrentMenuMember();
+    // const menuMember = returnCurrentMenuMember();
 
     const modalConfigOptions = {
         modalizeRef: modalizeRef,
@@ -23,8 +27,19 @@ const Menu: React.FC = () => {
     };
 
     useEffect(() => {
-        getCurrentDay();
+        getMenuUser();
+        
     }, [])
+
+    async function getMenuUser() {
+        let userStorage = await AsyncStorage.getItem("@EMAuth:user") as string;
+        const storagedUser: MemberInterface = JSON.parse(userStorage);
+        
+        menuUserService.getById(storagedUser.id as number).then(
+            response => setMenuMember(response.data),
+            error => console.log("ERROR :", error)
+        )
+    }
 
     const onOpen = () => {
         modalizeRef.current?.open();
@@ -38,6 +53,14 @@ const Menu: React.FC = () => {
         const daysById = menuMember.days.filter(day => day.dayId === currentDayId);
     }
 
+    if(!menuMember) {
+        return (
+            <View>
+                <Text>- Sem Cardapio atribuido -</Text>
+            </View>
+        )
+    }
+
     return (
         <>
             <ScrollView>
@@ -46,12 +69,12 @@ const Menu: React.FC = () => {
                     <Text style={styles.title}>{menuMember.menuName}</Text>
                     <Text style={styles.subTitle}>
                         (Periodo: {menuMember.qtdDays} Dias)
-                </Text>
+                    </Text>
 
                     <View style={styles.boxMenu}>
-                        {menuMember.days.map((day, index) => (
-                            <View style={styles.boxDay}>
-                                <Text style={styles.boxMenuLabel} key={String(index)}> {day.dayName} </Text>
+                        {menuMember?.days?.map((day, index) => (
+                            <View style={styles.boxDay} key={String(index)}>
+                                <Text style={styles.boxMenuLabel}> {day.dayName} </Text>
 
                                 <View style={styles.boxDayContent}>
                                     <View>
@@ -76,7 +99,7 @@ const Menu: React.FC = () => {
                             </View>
                         ))}
                     </View>
-                    {/* <MenuImagesModal modalConfigOptions={modalConfigOptions} /> */}
+                
                 </View>
             </ScrollView>
 

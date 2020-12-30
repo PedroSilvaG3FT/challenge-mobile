@@ -7,9 +7,11 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-community/async-storage';
 import MemberInterface from '../../interfaces/member.interface'
+import { UserService } from '../../service/UserService';
 
 const Member: React.FC = () => {
     const navigation = useNavigation();
+    const userService = new UserService();
     const [user, setUser] = useState<MemberInterface>({} as MemberInterface);
 
     useEffect(() => {
@@ -17,9 +19,18 @@ const Member: React.FC = () => {
     },[])
     
     async function getUserInfo() {
-        const storagedUser: string = await AsyncStorage.getItem("@EMAuth:user") as string;
-        setUser(JSON.parse(storagedUser));
+        let userStorage = await AsyncStorage.getItem("@EMAuth:user") as string;
+        const storagedUser: MemberInterface = JSON.parse(userStorage);
+        
+        userService.getById(storagedUser.id as number).then(
+            response => {
+                console.log(response.data);
+                setUser(response.data);
+            },
+            error => console.log("ERROR :", error)
+        );
     }
+
 
     return (
         <ScrollView>
@@ -46,7 +57,7 @@ const Member: React.FC = () => {
                     <View style={styles.centerAlignItems}>
                         <Text style={[styles.goalText, { color: Colors.colorDanger }]}>Meta</Text>
                         <Text>(Final)</Text>
-                        <Text style={styles.goalWeight}> 75kg </Text>
+                        <Text style={styles.goalWeight}> {user.goalWeight}Kg </Text>
                     </View>
                 </View>
 
