@@ -19,8 +19,8 @@ const PasswordMemberRegister: React.FC = (props: any) => {
   }, [])
 
   const handleConfirm: SubmitHandler<any> = (data) => {
-    const password = data.password;
-    const passwordConfirm = data.passwordConfirm;
+    const password = data.password.trim();
+    const passwordConfirm = data.passwordConfirm.trim();
 
     if (password != passwordConfirm) {
       console.log("As senhas não batem mano");

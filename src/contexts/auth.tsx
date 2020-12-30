@@ -47,10 +47,17 @@ export const AuthProvider: React.FC = ({ children }) => {
 
 
     async function getUser() {
+        const storagedUser: any = await AsyncStorage.getItem("@EMAuth:user");
+
         userService.getById(user.id).then(
             response => {
-                console.log(response.data);
-                setUser(response.data);
+                const userResponse = response.data;
+
+                if (storagedUser === JSON.stringify(userResponse)) {
+                    return;
+                }
+
+                setUser(userResponse);
                 AsyncStorage.setItem("@EMAuth:user", JSON.stringify(response.data));
             }
         )

@@ -22,12 +22,12 @@ const NameMemberRegister: React.FC = (props: any) => {
 
     const newParams = {
       ...currentProps,
-      name: data.name,
-      cpf: data.cpf,
+      name: data.name.trim(),
+      cpf: data.cpf.trim(),
       age: data.age,
       phoneNumber: data.phoneNumber
     };
-    
+
     navigation.navigate("DataMemberRegister", newParams);
   };
   

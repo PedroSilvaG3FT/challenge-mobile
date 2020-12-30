@@ -3,10 +3,11 @@ import Colors from '../../constants/Colors';
 import Input from '../../components/form/input';
 import { Form } from '@unform/mobile';
 import { Text, View, Image, StyleSheet } from "react-native";
-import { RectButton, TouchableOpacity } from 'react-native-gesture-handler';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import { FormHandles, SubmitHandler } from '@unform/core';
 import { UserService } from '../../service/UserService';
 import { useAuth } from '../../contexts/auth';
+import MemberInterface from '../../interfaces/member.interface';
 
 
 const DataMemberRegister: React.FC = (props: any) => {
@@ -14,7 +15,6 @@ const DataMemberRegister: React.FC = (props: any) => {
     const formRef = useRef<FormHandles>(null);
     const userService = new UserService();
     const [currentProps, setProps] = useState<object>({});
-    const [userRegister, setUserRegister] = useState<any>(null);
 
     useEffect(() => {
         const params = props.route.params;
@@ -23,21 +23,23 @@ const DataMemberRegister: React.FC = (props: any) => {
     }, [])
 
     const handleConfirm: SubmitHandler<any> = async (data) => {
-        const userDTO = {
+        const userDTO: MemberInterface = {
             ...currentProps,
             startingWeight: data.startingWeight,
             height: data.height,
-            comments: data.comments
-        };
+            comments: data.comments.trim()
+        } as MemberInterface;
 
         console.log(userDTO);
 
-        // const response = await userService.create(userDTO);
+        const response = await userService.create(userDTO);
+
+        console.log("RESPONSE :", response.data);
         
-        // signIn({
-        //     email: userDTO.email,
-        //     password: userDTO.password
-        // });
+        signIn({
+            email: userDTO.email,
+            password: userDTO.password
+        });
     };
 
     return (
