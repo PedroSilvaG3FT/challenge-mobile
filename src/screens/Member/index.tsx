@@ -50,7 +50,7 @@ const Member: React.FC = () => {
                             }}
                         />
 
-                        <Text>Olá {user?.name}, o seu peso atual é:</Text>
+                        <Text>Olá {user?.name.split(" ")[0]}, o seu peso atual é</Text>
                         <Text style={styles.currentWeightText}>76kg</Text>
                     </View>
 

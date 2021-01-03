@@ -8,17 +8,14 @@ import MenuImagesModal from '../../components/modals/MenuImages';
 import { Text, View } from '../../components/Themed';
 import Colors from '../../constants/Colors';
 import MemberInterface from '../../interfaces/member.interface';
+import { MemberMenuInterface } from '../../interfaces/memberMenu.interface';
 import { MenuUserService } from '../../service/MenuUserService';
-import { MemberMenuInterface, returnCurrentMenuMember } from './fakeResultApi'
-
 
 const Menu: React.FC = () => {
     const [menuMember, setMenuMember] = useState({} as MemberMenuInterface);
+    const windowHeight = Dimensions.get("window").height;
     const menuUserService = new MenuUserService();
     const modalizeRef = useRef<Modalize>(null);
-    const windowHeight = Dimensions.get("window").height;
-
-    // const menuMember = returnCurrentMenuMember();
 
     const modalConfigOptions = {
         modalizeRef: modalizeRef,
@@ -28,13 +25,13 @@ const Menu: React.FC = () => {
 
     useEffect(() => {
         getMenuUser();
-        
+
     }, [])
 
     async function getMenuUser() {
         let userStorage = await AsyncStorage.getItem("@EMAuth:user") as string;
         const storagedUser: MemberInterface = JSON.parse(userStorage);
-        
+
         menuUserService.getById(storagedUser.id as number).then(
             response => setMenuMember(response.data),
             error => console.log("ERROR :", error)
@@ -53,7 +50,7 @@ const Menu: React.FC = () => {
         const daysById = menuMember.days.filter(day => day.dayId === currentDayId);
     }
 
-    if(!menuMember) {
+    if (!menuMember) {
         return (
             <View>
                 <Text>- Sem Cardapio atribuido -</Text>
@@ -99,7 +96,7 @@ const Menu: React.FC = () => {
                             </View>
                         ))}
                     </View>
-                
+
                 </View>
             </ScrollView>
 
@@ -111,9 +108,6 @@ const Menu: React.FC = () => {
                 <MenuImagesModal modalConfigOptions={modalConfigOptions} />
             </Modalize>
         </>
-
-
-
     );
 }
 
