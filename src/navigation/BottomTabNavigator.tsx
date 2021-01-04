@@ -12,6 +12,7 @@ import MemberGroup from '../screens/MemberGroup';
 import TipsNews from '../screens/TipsNews';
 import Settings from '../screens/Settings';
 import Menu from '../screens/Menu';
+import Exercice from '../screens/Exercice';
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 
@@ -77,6 +78,14 @@ function TabMemberNavigator() {
         component={Menu}
         options={{
           title: "Cardapio"
+        }}
+      />
+
+      <TabMemberStack.Screen
+        name="ExerciceScreen"
+        component={Exercice}
+        options={{
+          title: "Exercícios"
         }}
       />
     </TabMemberStack.Navigator>

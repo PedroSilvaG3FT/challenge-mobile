@@ -31,7 +31,6 @@ const Member: React.FC = () => {
         );
     }
 
-
     return (
         <ScrollView>
             <View style={styles.container}>
@@ -50,7 +49,7 @@ const Member: React.FC = () => {
                             }}
                         />
 
-                        <Text>Olá {user?.name.split(" ")[0]}, o seu peso atual é</Text>
+                        <Text>Olá {user?.name?.split(" ")[0]}, o seu peso atual é</Text>
                         <Text style={styles.currentWeightText}>76kg</Text>
                     </View>
 
@@ -74,6 +73,7 @@ const Member: React.FC = () => {
                     nameIcon="run-fast"
                     width={"auto"}
                     height={60}
+                    onPress={() => navigation.navigate('ExerciceScreen')}
                 />
 
                 <GradientButton
