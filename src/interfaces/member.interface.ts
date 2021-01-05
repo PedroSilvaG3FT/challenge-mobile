@@ -9,6 +9,7 @@ export default interface MemberInterface {
     phoneNumber?: number;
     startingWeight?: number;
     goalWeight?: number;
+    goalWeek?: number;
     height?: number;
     payday?: number;
     isAdm?: boolean;

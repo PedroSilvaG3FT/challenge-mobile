@@ -104,6 +104,7 @@ const Menu: React.FC = () => {
                 ref={modalizeRef}
                 snapPoint={windowHeight / 2}
                 modalHeight={windowHeight - 130}
+                
             >
                 <MenuImagesModal modalConfigOptions={modalConfigOptions} />
             </Modalize>

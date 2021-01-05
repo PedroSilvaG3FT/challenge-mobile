@@ -13,6 +13,7 @@ import TipsNews from '../screens/TipsNews';
 import Settings from '../screens/Settings';
 import Menu from '../screens/Menu';
 import Exercice from '../screens/Exercice';
+import Profile from '../screens/Profile';
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 
@@ -86,6 +87,14 @@ function TabMemberNavigator() {
         component={Exercice}
         options={{
           title: "Exercícios"
+        }}
+      />
+
+      <TabMemberStack.Screen
+        name="ProfileScreen"
+        component={Profile}
+        options={{
+          title: "Meu Perfil"
         }}
       />
     </TabMemberStack.Navigator>

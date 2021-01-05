@@ -73,7 +73,7 @@ export const AuthProvider: React.FC = ({ children }) => {
                 AsyncStorage.setItem("@EMAuth:token", responseData.token);
             },
             error => {
-                console.log("ERRO", error);
+                console.log("ERRO", error.message);
             }
             
         );

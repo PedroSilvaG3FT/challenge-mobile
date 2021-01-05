@@ -14,6 +14,7 @@ export type TabMemberParamList = {
   MemberScreen: undefined;
   MenuScreen: undefined;
   ExerciceScreen: undefined;
+  ProfileScreen: undefined;
 };
 
 export type TabMemberGroupParamList = {

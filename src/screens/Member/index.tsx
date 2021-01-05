@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Image, StatusBar, StyleSheet } from 'react-native';
+import { Image, RefreshControl, StatusBar, StyleSheet } from 'react-native';
 import { Text, View } from '../../components/Themed';
 import Colors from '../../constants/Colors';
 import GradientButton from '../../components/GradientButton';
@@ -8,12 +8,26 @@ import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-community/async-storage';
 import MemberInterface from '../../interfaces/member.interface'
 import { UserService } from '../../service/UserService';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+const wait = (timeout: number) => {
+    return new Promise(resolve => {
+        setTimeout(resolve, timeout);
+    });
+}
 
 const Member: React.FC = () => {
     const navigation = useNavigation();
     const userService = new UserService();
     const [user, setUser] = useState<MemberInterface>({} as MemberInterface);
+    const [refreshing, setRefreshing] = useState(false);
 
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+
+        wait(2000).then(() => setRefreshing(false));
+    }, []);
+    
     useEffect(() => {
         getUserInfo()
     },[])
@@ -21,10 +35,9 @@ const Member: React.FC = () => {
     async function getUserInfo() {
         let userStorage = await AsyncStorage.getItem("@EMAuth:user") as string;
         const storagedUser: MemberInterface = JSON.parse(userStorage);
-        
         userService.getById(storagedUser.id as number).then(
             response => {
-                console.log(response.data);
+                console.log("USER", response.data);
                 setUser(response.data);
             },
             error => console.log("ERROR :", error)
@@ -32,13 +45,18 @@ const Member: React.FC = () => {
     }
 
     return (
-        <ScrollView>
+        <ScrollView
+            refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }>
             <View style={styles.container}>
                 <View style={styles.header}>
                     <View style={styles.centerAlignItems}>
                         <Text style={styles.goalText}>Meta</Text>
                         <Text>(Semana)</Text>
-                        <Text style={styles.goalWeight}> 75kg </Text>
+                        <Text style={styles.goalWeight}> 
+                            {user.goalWeek}Kg
+                        </Text>
                     </View>
 
                     <View style={styles.centerAlignItems}>
@@ -88,6 +106,7 @@ const Member: React.FC = () => {
                     nameIcon="account-details"
                     width={"auto"}
                     height={60}
+                    onPress={() => navigation.navigate('ProfileScreen')}
                 />
 
                 <View style={styles.summaryBox}>
@@ -121,7 +140,7 @@ const Member: React.FC = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingHorizontal: 24,
+        paddingHorizontal: 16,
         paddingVertical: Number(StatusBar.currentHeight) + 38
     },
 

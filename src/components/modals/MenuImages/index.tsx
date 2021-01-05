@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { IHandles } from 'react-native-modalize/lib/options';
+import Colors from '../../../constants/Colors';
 import { Text, View } from '../../Themed';
 
 interface ModalImagesProps {
@@ -20,6 +21,7 @@ const MenuImagesModal: React.FC<ModalImagesProps> = (props) => {
     return (
         <View style={styles.container}>
             <Text>Modal Images</Text>
+            
         </View>
     );
 }
@@ -27,7 +29,9 @@ const MenuImagesModal: React.FC<ModalImagesProps> = (props) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 40
+        height: '100%',
+        padding: 40,
+        backgroundColor: Colors.bgDarkSecondary
     }
 })
 
