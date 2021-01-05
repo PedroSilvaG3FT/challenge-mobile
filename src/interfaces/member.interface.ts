@@ -18,4 +18,6 @@ export default interface MemberInterface {
     currentStep?: number;
     active: boolean;
     dateCreation: Date;
+
+    currentWeight?: number;
 }
