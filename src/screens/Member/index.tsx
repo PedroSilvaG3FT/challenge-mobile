@@ -9,6 +9,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import MemberInterface from '../../interfaces/member.interface'
 import { UserService } from '../../service/UserService';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { differenceInDays } from 'date-fns';
 
 const wait = (timeout: number) => {
     return new Promise(resolve => {
@@ -21,6 +22,10 @@ const Member: React.FC = () => {
     const userService = new UserService();
     const [user, setUser] = useState<MemberInterface>({} as MemberInterface);
     const [refreshing, setRefreshing] = useState(false);
+
+    const [currentDay, setCurrentDay] = useState<number>(0);
+    const [remainingGoalWeek, setRemainingGoalWeek] = useState<number | undefined>(0);
+    const [remainingGoalWeight, setRemainingGoalWeight] = useState<number | undefined>(0);
 
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
@@ -37,8 +42,17 @@ const Member: React.FC = () => {
         const storagedUser: MemberInterface = JSON.parse(userStorage);
         userService.getById(storagedUser.id as number).then(
             response => {
-                console.log("USER", response.data);
-                setUser(response.data);
+                const res = response.data; 
+                setUser(res);
+                
+                setRemainingGoalWeek(res.currentWeight - res.goalWeek);
+                setRemainingGoalWeight(res.currentWeight - res.goalWeight);
+
+                const _initalDay =  new Date(user.dateCreation);
+                const _currentDay = new Date();
+                const days = differenceInDays(_currentDay, _initalDay);
+
+                setCurrentDay(days);
             },
             error => console.log("ERROR :", error)
         );
@@ -55,7 +69,7 @@ const Member: React.FC = () => {
                         <Text style={styles.goalText}>Meta</Text>
                         <Text>(Semana)</Text>
                         <Text style={styles.goalWeight}> 
-                            {user.goalWeek}Kg
+                            {user.goalWeek ? `${user.goalWeek}Kg` : 'n/A'}
                         </Text>
                     </View>
 
@@ -68,13 +82,17 @@ const Member: React.FC = () => {
                         />
 
                         <Text>Olá {user?.name?.split(" ")[0]}, o seu peso atual é</Text>
-                        <Text style={styles.currentWeightText}>76kg</Text>
+                        <Text style={styles.currentWeightText}>
+                            {user.currentWeight ? `${user.currentWeight}Kg` : 'n/A'}
+                        </Text>
                     </View>
 
                     <View style={styles.centerAlignItems}>
                         <Text style={[styles.goalText, { color: Colors.colorDanger }]}>Meta</Text>
                         <Text>(Final)</Text>
-                        <Text style={styles.goalWeight}> {user.goalWeight}Kg </Text>
+                        <Text style={styles.goalWeight}> 
+                            {user.goalWeight ? `${user.goalWeight}Kg` : 'n/A'}
+                        </Text>
                     </View>
                 </View>
 
@@ -115,19 +133,25 @@ const Member: React.FC = () => {
                     <View style={styles.summaryItemsBox}>
                         <View style={styles.summaryItem}>
                             <Text style={styles.summaryItemLabel}> Dia </Text>
-                            <Text style={[styles.summaryItemValue, { color: Colors.colorPrimary }]}> 21 </Text>
+                            <Text style={[styles.summaryItemValue, { color: Colors.colorPrimary }]}> 
+                                {currentDay}
+                            </Text>
                             <Text style={styles.summaryItemLabel}> de 90 </Text>
                         </View>
 
                         <View style={styles.summaryItem}>
                             <Text style={styles.summaryItemLabel}> Restam </Text>
-                            <Text style={[styles.summaryItemValue, , { color: Colors.colorDangerLight }]}> 10kg </Text>
+                            <Text style={[styles.summaryItemValue, , { color: Colors.colorDangerLight }]}> 
+                                {remainingGoalWeek}Kg
+                            </Text>
                             <Text style={styles.summaryItemLabel}> Para a meta da semana </Text>
                         </View>
 
                         <View style={styles.summaryItem}>
                             <Text style={styles.summaryItemLabel}> Restam </Text>
-                            <Text style={[styles.summaryItemValue, , { color: Colors.colorDanger }]}> 10kg </Text>
+                            <Text style={[styles.summaryItemValue, , { color: Colors.colorDanger }]}>
+                                {remainingGoalWeight}Kg
+                            </Text>
                             <Text style={styles.summaryItemLabel}> Para a meta Final </Text>
                         </View>
                     </View>
@@ -203,7 +227,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'space-evenly',
         alignItems: 'center',
-        height: 108,
+        minHeight: 108,
         padding: 8,
         borderRadius: 8,
         marginHorizontal: 8
