@@ -48,7 +48,7 @@ const Member: React.FC = () => {
                 setRemainingGoalWeek(res.currentWeight - res.goalWeek);
                 setRemainingGoalWeight(res.currentWeight - res.goalWeight);
 
-                const _initalDay =  new Date(user.dateCreation);
+                const _initalDay =  new Date(res.dateCreation);
                 const _currentDay = new Date();
                 const days = differenceInDays(_currentDay, _initalDay);
 

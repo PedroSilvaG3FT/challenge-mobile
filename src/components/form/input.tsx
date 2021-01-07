@@ -18,6 +18,7 @@ interface InputProps {
 
 const Input: React.FC<InputProps> = (props) => {
   const [isFocus, setFocus] = useState(false);
+  const [hasValue, setHasValue] = useState(false);
   const inputRef = useRef<HTMLInputElement | any>(null);
   const { fieldName, registerField, defaultValue, error } = useField(props.name);
 
@@ -26,12 +27,21 @@ const Input: React.FC<InputProps> = (props) => {
   }, [defaultValue]);
 
   useEffect(() => {
+    if (inputRef?.current?.value) {
+      setHasValue(true);
+    } else {
+      // setHasValue(false);
+    }
+
+  }, [inputRef?.current?.value]);
+
+  useEffect(() => {
     registerField({
       name: fieldName,
       ref: inputRef.current,
       path: "value",
       setValue: (ref, value) => {
-        ref.setNativeProps({ text: value });
+        ref.setNativeProps({ text: String(value) });
         inputRef.current.value = value;
       },
     });
@@ -53,7 +63,7 @@ const Input: React.FC<InputProps> = (props) => {
 
   return (
     <View>
-      {isFocus ? 
+      {(hasValue || isFocus) ? 
         <Text style={[styles.textLabel, isFocus ? {color: Colors.colorPrimary} : {}]}>{props.placeholder}</Text> : 
         null
       }
