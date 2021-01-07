@@ -8,8 +8,8 @@ import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-community/async-storage';
 import MemberInterface from '../../interfaces/member.interface'
 import { UserService } from '../../service/UserService';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { differenceInDays } from 'date-fns';
+import { useFocusEffect } from '@react-navigation/native';
 
 const wait = (timeout: number) => {
     return new Promise(resolve => {
@@ -29,10 +29,15 @@ const Member: React.FC = () => {
 
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
-
+        getUserInfo();
         wait(2000).then(() => setRefreshing(false));
     }, []);
-    
+
+    useFocusEffect(
+        React.useCallback(() => {
+            getUserInfo()
+        }, [])
+    );
     useEffect(() => {
         getUserInfo()
     },[])

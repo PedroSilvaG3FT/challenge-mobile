@@ -27,12 +27,12 @@ const Profile: React.FC = () => {
     async function getUserInfo() {
         let userStorage = await AsyncStorage.getItem("@EMAuth:user") as string;
         const storagedUser: MemberInterface = JSON.parse(userStorage);
+
         userService.getById(storagedUser.id as number).then(
             response => {
-                const res = response.data;
-                formRef.current?.setData(res);
-                console.log(res);
-                setUser(res);
+                const userRes = response.data;
+                formRef.current?.setData(userRes);
+                setUser(userRes);
             },
             error => console.log("ERROR :", error)
         );

@@ -84,7 +84,7 @@ const Input: React.FC<InputProps> = (props) => {
         autoCapitalize={props.autoCapitalize}
         multiline={props.lines ? true : false}
         numberOfLines={props.lines}
-        placeholderTextColor={isFocus ? "transparent" : (props.lightMode ? Colors.bgDarkSecondary : "#FFF")} 
+        placeholderTextColor={isFocus ? "transparent" : (props.lightMode ? "#A9A9A9" : "#FFF")} 
       />
     </View>
 
