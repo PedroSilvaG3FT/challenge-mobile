@@ -43,13 +43,13 @@ const Profile: React.FC = () => {
     return (
         <View style={styles.container}>
             <Form ref={formRef} onSubmit={handleSubmit} style={{ width: "100%" }}>
-                <Input name="name" placeholder="Nome" autoCapitalize="none" />
-                <Input name="cpf" placeholder="CPF" autoCapitalize="none" />
-                <Input name="email" placeholder="Email" autoCapitalize="none" />
+                <Input name="name" placeholder="Nome" editable={false} />
+                <Input name="cpf" placeholder="CPF" editable={false} />
+                <Input name="email" placeholder="Email" editable={false} />
 
                 <View style={styles.inlineInput}>
-                    <Input name="startingWeight" placeholder="Peso Inicial" />
-                    <Input name="height" placeholder="Altura" />
+                    <Input name="startingWeight" placeholder="Peso Inicial" editable={false}/>
+                    <Input name="height" placeholder="Altura" keyboardType="decimal-pad"/>
                 </View>
 
                 <View style={styles.boxUpdateWeight}>
@@ -63,15 +63,14 @@ const Profile: React.FC = () => {
 
                     <Text style={styles.labelBoxUpdateWeight}>Atualizar Peso Atual</Text>
                 </View>
-
-                <RectButton
-                    style={styles.button}
-                    onPress={() => formRef.current?.submitForm()}
-                >
-                    <Text style={styles.buttonText}>Salvar</Text>
-                </RectButton>
-
             </Form>
+
+            <RectButton
+                style={styles.button}
+                onPress={() => formRef.current?.submitForm()}
+            >
+                <Text style={styles.buttonText}>Salvar</Text>
+            </RectButton>
         </View>
     );
 
@@ -80,8 +79,8 @@ const Profile: React.FC = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: "center",
         padding: 24,
+        justifyContent: 'space-between'
     },
 
     button: {
@@ -92,13 +91,13 @@ const styles = StyleSheet.create({
         overflow: "hidden",
         alignItems: "center",
         marginTop: 8,
-        alignContent: 'flex-end',
+        alignSelf: 'center',
     },
 
     boxUpdateWeight: {
         alignItems: 'center',
         justifyContent: 'center',
-        marginVertical: 16
+        marginVertical: 32
     },
 
     buttonUpdateWeight: {

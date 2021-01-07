@@ -11,6 +11,7 @@ interface InputProps {
   lines?: number;
   placeholder?: string;
   secureTextEntry?: boolean;
+  editable?: boolean;
   style?: object;
   keyboardType?: "number-pad" | "decimal-pad" | "numeric" | "email-address" | "phone-pad";
   autoCapitalize?: "none" | "sentences" | "words" | "characters" | undefined;
@@ -73,6 +74,7 @@ const Input: React.FC<InputProps> = (props) => {
         defaultValue={defaultValue}
         placeholder={props.placeholder}
         onFocus={handleFocus}
+        editable={props.editable}
         onBlur={() => handleBlur()}
         secureTextEntry={props.secureTextEntry}
         onChangeText={(value) => setValue(value)}
