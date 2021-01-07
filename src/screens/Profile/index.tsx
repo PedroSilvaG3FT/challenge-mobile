@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useNavigation } from '@react-navigation/native';
 import { FormHandles, SubmitHandler } from '@unform/core';
 import { RectButton } from 'react-native-gesture-handler';
 import { View, Text, StyleSheet } from 'react-native';
@@ -9,14 +8,17 @@ import Colors from '../../constants/Colors';
 import AsyncStorage from '@react-native-community/async-storage';
 import MemberInterface from '../../interfaces/member.interface';
 import { UserService } from '../../service/UserService';
+import { Modalize } from 'react-native-modalize';
+import { WeightUserService } from '../../service/WeightUserService';
 
 const Profile: React.FC = () => {
     const formRef = useRef<FormHandles>(null);
-    const navigation = useNavigation();
+    const modalizeRef = useRef<Modalize>(null);
 
     const userService = new UserService();
+    const weightUserService = new WeightUserService();
+
     const [user, setUser] = useState<MemberInterface>({} as MemberInterface);
-    const [refreshing, setRefreshing] = useState(false);
 
     useEffect(() => {
         getUserInfo()
@@ -36,42 +38,91 @@ const Profile: React.FC = () => {
         );
     }
 
+
+    const onOpen = () => {
+        modalizeRef.current?.open();
+    };
+
     const handleSubmit: SubmitHandler<any> = (data) => {
         console.log("DATA :", data);
     };
 
+    const handleSubmitNewWeight: SubmitHandler<any> = (data) => {
+        console.log("DATA :", data);
+        weightUserService.create({
+            userId: user.id,
+            weight: data.weight
+        }).then(
+            response => {                
+                console.log("ERRO :", response.data.message);
+                getUserInfo();
+                modalizeRef.current?.close();
+            },
+            error => {
+                console.log("ERRO :", error.error);
+                modalizeRef.current?.close();
+            }
+        )
+    };
+
     return (
-        <View style={styles.container}>
-            <Form ref={formRef} onSubmit={handleSubmit} style={{ width: "100%" }}>
-                <Input name="name" placeholder="Nome" editable={false} />
-                <Input name="cpf" placeholder="CPF" editable={false} />
-                <Input name="email" placeholder="Email" editable={false} />
+        <>
+            <View style={styles.container}>
+                <Form ref={formRef} onSubmit={handleSubmit} style={{ width: "100%" }}>
+                    <Input name="name" placeholder="Nome" editable={false} />
+                    <Input name="cpf" placeholder="CPF" editable={false} />
+                    <Input name="email" placeholder="Email" editable={false} />
 
-                <View style={styles.inlineInput}>
-                    <Input name="startingWeight" placeholder="Peso Inicial" editable={false}/>
-                    <Input name="height" placeholder="Altura" keyboardType="decimal-pad"/>
-                </View>
+                    <View style={styles.inlineInput}>
+                        <Input name="startingWeight" placeholder="Peso Inicial" editable={false} />
+                        <Input name="height" placeholder="Altura" keyboardType="decimal-pad" />
+                    </View>
 
-                <View style={styles.boxUpdateWeight}>
-                    <RectButton
-                        style={styles.buttonUpdateWeight}
-                    >
-                        <Text style={styles.buttonTextUpdateWeight}>
-                            {user.currentWeight}Kg
+                    <View style={styles.boxUpdateWeight}>
+                        <RectButton
+                            style={styles.buttonUpdateWeight}
+                        >
+                            <Text style={styles.buttonTextUpdateWeight} onPress={() => onOpen()}>
+                                {user.currentWeight || user.startingWeight}Kg
                         </Text>
-                    </RectButton>
+                        </RectButton>
 
-                    <Text style={styles.labelBoxUpdateWeight}>Atualizar Peso Atual</Text>
-                </View>
-            </Form>
+                        <Text style={styles.labelBoxUpdateWeight}>Atualizar Peso Atual</Text>
+                    </View>
+                </Form>
 
-            <RectButton
-                style={styles.button}
-                onPress={() => formRef.current?.submitForm()}
+                <RectButton
+                    style={styles.button}
+                    onPress={() => formRef.current?.submitForm()}
+                >
+                    <Text style={styles.buttonText}>Salvar</Text>
+                </RectButton>
+            </View>
+
+            <Modalize ref={modalizeRef}
+                snapPoint={600}
+                modalHeight={600}
             >
-                <Text style={styles.buttonText}>Salvar</Text>
-            </RectButton>
-        </View>
+                <View style={styles.container}>
+                    <Form ref={formRef} onSubmit={handleSubmitNewWeight} style={{ width: "100%" }}>
+                        <Input
+                            name="weight"
+                            placeholder="Novo Peso"
+                            lightMode={true}
+                            keyboardType="decimal-pad"
+                        />
+
+                        <RectButton
+                            style={styles.button}
+                            onPress={() => formRef.current?.submitForm()}
+                        >
+                            <Text style={styles.buttonText}>Atualizar Peso atual</Text>
+                        </RectButton>
+                    </Form>
+                </View>
+
+            </Modalize>
+        </>
     );
 
 }
@@ -109,7 +160,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
 
-    buttonTextUpdateWeight: { 
+    buttonTextUpdateWeight: {
         color: "#FFF",
         fontSize: 30,
     },

@@ -13,6 +13,7 @@ interface InputProps {
   secureTextEntry?: boolean;
   editable?: boolean;
   style?: object;
+  lightMode?: boolean;
   keyboardType?: "number-pad" | "decimal-pad" | "numeric" | "email-address" | "phone-pad";
   autoCapitalize?: "none" | "sentences" | "words" | "characters" | undefined;
 }
@@ -22,10 +23,6 @@ const Input: React.FC<InputProps> = (props) => {
   const [hasValue, setHasValue] = useState(false);
   const inputRef = useRef<HTMLInputElement | any>(null);
   const { fieldName, registerField, defaultValue, error } = useField(props.name);
-
-  useEffect(() => {
-    inputRef.current.value = defaultValue;
-  }, [defaultValue]);
 
   useEffect(() => {
     if (inputRef?.current?.value) {
@@ -70,7 +67,12 @@ const Input: React.FC<InputProps> = (props) => {
       }
       <TextInput
         ref={inputRef}
-        style={[styles.input, props.style, isFocus ? styles.inputFocus : {} ]}
+        style={[
+          styles.input, 
+          props.style, 
+          isFocus ? styles.inputFocus : {},
+          props.lightMode ? styles.lightModeInput : {},
+        ]}
         defaultValue={defaultValue}
         placeholder={props.placeholder}
         onFocus={handleFocus}
@@ -82,7 +84,7 @@ const Input: React.FC<InputProps> = (props) => {
         autoCapitalize={props.autoCapitalize}
         multiline={props.lines ? true : false}
         numberOfLines={props.lines}
-        placeholderTextColor={ isFocus ? "transparent" : "#FFF"} 
+        placeholderTextColor={isFocus ? "transparent" : (props.lightMode ? Colors.bgDarkSecondary : "#FFF")} 
       />
     </View>
 
@@ -108,6 +110,11 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     paddingHorizontal: 24,
     fontSize: 16,
+  },
+
+  lightModeInput: {
+    borderBottomColor: Colors.bgDarkSecondary,
+    color: Colors.bgDarkSecondary,
   },
 
   inputFocus: {
