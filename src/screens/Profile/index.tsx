@@ -106,8 +106,8 @@ const Profile: React.FC = () => {
                     <View style={styles.separator}></View>
 
                     <View style={styles.inlineInput}>
-                        <Input name="height" placeholder="Altura" keyboardType="decimal-pad" />
                         <Input name="phoneNumber" placeholder="Telefone" keyboardType="number-pad" />
+                        <Input name="height" placeholder="Altura" keyboardType="decimal-pad" />
 
                         <View style={styles.boxUpdateWeight}>
                             <Text style={styles.labelBoxUpdateWeight}>Atualizar Peso Atual</Text>

@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import React, { useEffect, useState } from 'react';
-import { StatusBar, StyleSheet } from 'react-native';
+import { Image, StatusBar, StyleSheet } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Text, View } from '../../components/Themed';
 import Colors from '../../constants/Colors';
@@ -28,10 +28,20 @@ const Exercice: React.FC = () => {
         )
     }
 
-    if (!exerciseMember) {
+    console.log(exerciseMember)
+
+    if (!exerciseMember.length) {
         return (
-            <View>
-                <Text>- Sem Cardapio atribuido -</Text>
+            <View style={stylesMenuEmpty.container}>
+                <View style={stylesMenuEmpty.boxImage}>
+                    <Image
+                        style={stylesMenuEmpty.iconImage}
+                        source={require("../../../assets/icons/muscle.png")}
+                    />
+
+                    <Text style={stylesMenuEmpty.boxImageText}>- Sem Exercícios atribuidos -</Text>
+                    <Text style={stylesMenuEmpty.boxImageText}>Solicite ao administrador</Text>
+                </View>
             </View>
         )
     }
@@ -135,5 +145,31 @@ const styles = StyleSheet.create({
     }
 
 })
+
+
+const stylesMenuEmpty = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+
+    boxImage: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 24
+    },
+
+    iconImage: {
+        width: 150,
+        height: 150,
+        marginBottom: 24
+    },
+
+    boxImageText: {
+        color: "#FFF",
+        fontSize: 16
+    },
+});
 
 export default Exercice;

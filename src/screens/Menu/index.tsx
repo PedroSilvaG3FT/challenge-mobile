@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import React, { useEffect, useRef, useState } from 'react';
-import { Dimensions, StatusBar, StyleSheet } from 'react-native';
+import { Dimensions, Image, StatusBar, StyleSheet } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Modalize } from 'react-native-modalize';
 import GradientButton from '../../components/GradientButton';
@@ -25,7 +25,6 @@ const Menu: React.FC = () => {
 
     useEffect(() => {
         getMenuUser();
-
     }, [])
 
     async function getMenuUser() {
@@ -44,16 +43,18 @@ const Menu: React.FC = () => {
 
     function onCloseModal() { }
 
-    function getCurrentDay() {
-        const currentDate = new Date();
-        const currentDayId = currentDate.getDay() + 1;
-        const daysById = menuMember.days.filter(day => day.dayId === currentDayId);
-    }
-
-    if (!menuMember) {
+    if (!menuMember.days) {
         return (
-            <View>
-                <Text>- Sem Cardapio atribuido -</Text>
+            <View style={stylesMenuEmpty.container}>
+                <View style={stylesMenuEmpty.boxImage}>
+                    <Image
+                        style={stylesMenuEmpty.iconImage}
+                        source={require("../../../assets/icons/real-food.png")}
+                    />
+
+                    <Text style={stylesMenuEmpty.boxImageText}>- Sem Cardapio atribuido -</Text>
+                    <Text style={stylesMenuEmpty.boxImageText}>Solicite ao administrador</Text>
+                </View>
             </View>
         )
     }
@@ -165,5 +166,30 @@ const styles = StyleSheet.create({
     }
 
 })
+
+const stylesMenuEmpty = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+
+    boxImage: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 24
+    },
+
+    iconImage: {
+        width: 150,
+        height: 150,
+        marginBottom: 24
+    },
+
+    boxImageText: {
+        color: "#FFF",
+        fontSize: 16
+    },
+});
 
 export default Menu;
