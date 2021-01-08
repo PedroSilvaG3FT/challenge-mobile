@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { FormHandles, SubmitHandler } from '@unform/core';
-import { RectButton } from 'react-native-gesture-handler';
-import { View, Text, StyleSheet } from 'react-native';
+import { RectButton, TouchableOpacity } from 'react-native-gesture-handler';
+import { View, Text, StyleSheet, Image, Button } from 'react-native';
 import { Form } from '@unform/mobile';
 import Input from '../../components/form/input';
 import Colors from '../../constants/Colors';
@@ -10,6 +10,10 @@ import MemberInterface from '../../interfaces/member.interface';
 import { UserService } from '../../service/UserService';
 import { Modalize } from 'react-native-modalize';
 import { WeightUserService } from '../../service/WeightUserService';
+import GradientButton from '../../components/GradientButton';
+import AlertSnackBar, { ConfigAlertSnackBar } from '../../components/AlertSnackBar';
+
+const modalHeight = 500;
 
 const Profile: React.FC = () => {
     const formRef = useRef<FormHandles>(null);
@@ -18,10 +22,12 @@ const Profile: React.FC = () => {
     const userService = new UserService();
     const weightUserService = new WeightUserService();
 
+    const [alertSnackBarProp, setAlertSnackBarProp] = useState<ConfigAlertSnackBar>({} as ConfigAlertSnackBar);
+
     const [user, setUser] = useState<MemberInterface>({} as MemberInterface);
 
     useEffect(() => {
-        getUserInfo()
+        getUserInfo();
     }, [])
 
     async function getUserInfo() {
@@ -45,21 +51,28 @@ const Profile: React.FC = () => {
 
     const handleSubmit: SubmitHandler<any> = (data) => {
         console.log("DATA :", data);
+        
     };
 
     const handleSubmitNewWeight: SubmitHandler<any> = (data) => {
-        console.log("DATA :", data);
         weightUserService.create({
             userId: user.id,
             weight: data.weight
         }).then(
-            response => {                
-                console.log("ERRO :", response.data.message);
+            response => {
+                setAlertSnackBarProp({
+                    message: response.data.message,
+                    type: "success",
+                });
+
                 getUserInfo();
                 modalizeRef.current?.close();
             },
             error => {
-                console.log("ERRO :", error.error);
+                setAlertSnackBarProp({
+                    message: error.error,
+                    type: "success",
+                });
                 modalizeRef.current?.close();
             }
         )
@@ -69,55 +82,76 @@ const Profile: React.FC = () => {
         <>
             <View style={styles.container}>
                 <Form ref={formRef} onSubmit={handleSubmit} style={{ width: "100%" }}>
-                    <Input name="name" placeholder="Nome" editable={false} />
-                    <Input name="cpf" placeholder="CPF" editable={false} />
-                    <Input name="email" placeholder="Email" editable={false} />
+                    <View style={styles.boxUserInfo}>
+                        <Image
+                            style={styles.avatarImage}
+                            source={{
+                                uri: 'https://pickaface.net/gallery/avatar/unr_guihteste_180521_0137_2av4wpi.png',
+                            }}
+                        />
 
-                    <View style={styles.inlineInput}>
-                        <Input name="startingWeight" placeholder="Peso Inicial" editable={false} />
-                        <Input name="height" placeholder="Altura" keyboardType="decimal-pad" />
+                        <View>
+                            <Text style={styles.defaltText}>
+                                {user.name} {" "}
+                                (Peso Inicial: {user.startingWeight}Kg)
+                            </Text>
+                            <Text style={styles.defaltText}>{user.cpf}</Text>
+                            <Text style={styles.defaltText}>{user.email}</Text>
+                            <Text style={[styles.defaltText, { color: Colors.colorDangerLight }]}>
+                                Dia para pagamento: {user.payday}
+                            </Text>
+                        </View>
                     </View>
 
-                    <View style={styles.boxUpdateWeight}>
-                        <RectButton
-                            style={styles.buttonUpdateWeight}
-                        >
-                            <Text style={styles.buttonTextUpdateWeight} onPress={() => onOpen()}>
-                                {user.currentWeight || user.startingWeight}Kg
-                        </Text>
-                        </RectButton>
+                    <View style={styles.separator}></View>
 
-                        <Text style={styles.labelBoxUpdateWeight}>Atualizar Peso Atual</Text>
+                    <View style={styles.inlineInput}>
+                        <Input name="height" placeholder="Altura" keyboardType="decimal-pad" />
+                        <Input name="phoneNumber" placeholder="Telefone" keyboardType="number-pad" />
+
+                        <View style={styles.boxUpdateWeight}>
+                            <Text style={styles.labelBoxUpdateWeight}>Atualizar Peso Atual</Text>
+
+                            <RectButton style={styles.buttonUpdateWeight}>
+                                <Text style={styles.buttonUpdateWeightText} onPress={() => onOpen()}>
+                                    {user.currentWeight || user.startingWeight}Kg
+                                </Text>
+                            </RectButton>
+
+                        </View>
                     </View>
                 </Form>
 
-                <RectButton
+                <GradientButton
+                    height={60}
+                    title="Salvar"
                     style={styles.button}
+                    nameIcon="account-check-outline"
                     onPress={() => formRef.current?.submitForm()}
-                >
-                    <Text style={styles.buttonText}>Salvar</Text>
-                </RectButton>
+                />
             </View>
 
+            <AlertSnackBar config={alertSnackBarProp} />
+
             <Modalize ref={modalizeRef}
-                snapPoint={600}
-                modalHeight={600}
+                snapPoint={modalHeight}
+                modalHeight={modalHeight}
             >
-                <View style={styles.container}>
+                <View style={styles.containerModal}>
                     <Form ref={formRef} onSubmit={handleSubmitNewWeight} style={{ width: "100%" }}>
                         <Input
                             name="weight"
                             placeholder="Novo Peso"
-                            lightMode={true}
                             keyboardType="decimal-pad"
                         />
 
-                        <RectButton
+                        <GradientButton
+                            height={60}
+                            nameIcon="check"
                             style={styles.button}
+                            title="Atualizar Peso atual"
                             onPress={() => formRef.current?.submitForm()}
-                        >
-                            <Text style={styles.buttonText}>Atualizar Peso atual</Text>
-                        </RectButton>
+                        />
                     </Form>
                 </View>
 
@@ -131,42 +165,67 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 24,
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+    },
+
+    containerModal: {
+        padding: 24,
+        height: modalHeight,
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10,
+        backgroundColor: Colors.bgDarkSecondary,
+        justifyContent: 'space-between',
+    },
+
+    boxUserInfo: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+
+    defaltText: {
+        color: '#FFF',
+        marginVertical: 2
+    },
+
+    avatarImage: {
+        width: 100,
+        height: 100,
+        marginRight: 24,
+        borderRadius: 50,
+    },
+
+    separator: {
+        borderBottomColor: Colors.bgDarkSecondary,
+        borderWidth: 2,
+        marginVertical: 24,
+        marginHorizontal: 42
     },
 
     button: {
-        backgroundColor: Colors.colorPrimary,
         height: 60,
-        flexDirection: "row",
-        borderRadius: 10,
-        overflow: "hidden",
-        alignItems: "center",
-        marginTop: 8,
-        alignSelf: 'center',
     },
 
     boxUpdateWeight: {
         alignItems: 'center',
         justifyContent: 'center',
-        marginVertical: 32
     },
 
     buttonUpdateWeight: {
-        height: 100,
+        height: 34,
         width: 100,
-        borderRadius: 50,
-        backgroundColor: Colors.colorDangerLight,
+        borderRadius: 25,
+        backgroundColor: Colors.colorDanger,
         justifyContent: 'center',
         alignItems: 'center',
     },
 
-    buttonTextUpdateWeight: {
+    buttonUpdateWeightText: {
         color: "#FFF",
-        fontSize: 30,
+        fontSize: 25,
     },
 
     labelBoxUpdateWeight: {
-        marginTop: 8,
+        marginBottom: 14,
         color: "#FFF",
     },
 
@@ -178,17 +237,10 @@ const styles = StyleSheet.create({
         fontSize: 20,
     },
 
-    singUpText: {
-        marginVertical: 16,
-        color: Colors.colorPrimary,
-        fontSize: 16,
-        fontWeight: "bold",
-        textDecorationLine: "underline",
-        textAlign: 'center'
-    },
-
     inlineInput: {
         flexDirection: 'row',
+        alignItems: 'flex-start',
+        justifyContent: 'space-evenly'
     }
 });
 

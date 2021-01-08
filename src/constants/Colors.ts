@@ -21,6 +21,7 @@ export default {
   colorPrimary: tintColorLight,
   colorDangerLight: '#FF8C00',
   colorDanger: '#DC143C',
+  colorSuccess: '#3CB371',
 
   bgDarkSecondary: "#1C1C1C",
   
