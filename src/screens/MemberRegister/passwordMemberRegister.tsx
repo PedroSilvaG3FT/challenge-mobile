@@ -6,15 +6,16 @@ import { Form } from '@unform/mobile';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Input from '../../components/form/input';
 import Colors from '../../constants/Colors';
+import AlertSnackBar, { ConfigAlertSnackBar } from '../../components/AlertSnackBar';
 
 const PasswordMemberRegister: React.FC = (props: any) => {
   const formRef = useRef<FormHandles>(null);
   const navigation = useNavigation();
   const [currentProps, setProps] = useState<object>({});
+  const [alertSnackBarProp, setAlertSnackBarProp] = useState<ConfigAlertSnackBar>({} as ConfigAlertSnackBar);
 
   useEffect(() => {
     const params = props.route.params;
-    console.log(2, params);
     setProps(params)
   }, [])
 
@@ -23,37 +24,44 @@ const PasswordMemberRegister: React.FC = (props: any) => {
     const passwordConfirm = data.passwordConfirm.trim();
 
     if (password != passwordConfirm) {
-      console.log("As senhas não batem mano");
+      setAlertSnackBarProp({
+        message: "As senhas não coincidem!",
+        type: "error",
+      });
       return;
     }
 
-    const newParams = { ...currentProps, password}
+    const newParams = { ...currentProps, password }
     navigation.navigate("NameMemberRegister", newParams);
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.boxImage}>
-        <Image
-          style={styles.iconImage}
-          source={require("../../../assets/icons/security.png")}
-        />
+    <>
+      <View style={styles.container}>
+        <View style={styles.boxImage}>
+          <Image
+            style={styles.iconImage}
+            source={require("../../../assets/icons/security.png")}
+          />
 
-        <Text style={styles.boxImageText}>Configure uma senha de acesso</Text>
+          <Text style={styles.boxImageText}>Configure uma senha de acesso</Text>
+        </View>
+
+        <Form ref={formRef} onSubmit={handleConfirm} style={{ width: "100%" }}>
+          <Input name="password" placeholder="Crie sua senha" secureTextEntry={true} autoCapitalize="none" />
+          <Input name="passwordConfirm" placeholder="Confirme a senha" secureTextEntry={true} autoCapitalize="none" />
+
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => formRef.current?.submitForm()}
+          >
+            <Text style={styles.buttonText}>Avançar</Text>
+          </TouchableOpacity>
+        </Form>
       </View>
 
-      <Form ref={formRef} onSubmit={handleConfirm} style={{ width: "100%" }}>
-        <Input name="password" placeholder="Crie sua senha" secureTextEntry={true} autoCapitalize="none" />
-        <Input name="passwordConfirm" placeholder="Confirme a senha" secureTextEntry={true} autoCapitalize="none" />
-
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => formRef.current?.submitForm()}
-        >
-          <Text style={styles.buttonText}>Avançar</Text>
-        </TouchableOpacity>
-      </Form>
-    </View>
+      <AlertSnackBar config={alertSnackBarProp} />
+    </>
   );
 };
 
