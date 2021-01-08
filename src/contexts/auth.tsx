@@ -13,6 +13,7 @@ interface AuthContextData {
     loading: boolean;
     signIn(login: LoginInterface): Promise<void>;
     signOut(): void;
+    getUser(): void;
 }
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
@@ -39,7 +40,6 @@ export const AuthProvider: React.FC = ({ children }) => {
     }, []);
 
     useEffect(() => {
-        
         if (user && !user.active) {
             getUser();
         }
@@ -86,7 +86,7 @@ export const AuthProvider: React.FC = ({ children }) => {
     }
 
     return (
-        <AuthContext.Provider value={{ signed: !!user, approved: user?.active, acceptTerm: user?.acceptTerm, user, signIn, signOut, loading }}>
+        <AuthContext.Provider value={{ signed: !!user, approved: user?.active, acceptTerm: user?.acceptTerm, user, signIn, signOut, getUser, loading }}>
             {children}
         </AuthContext.Provider>
     );

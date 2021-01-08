@@ -74,7 +74,7 @@ const Member: React.FC = () => {
                         <Text style={styles.goalText}>Meta</Text>
                         <Text>(Semana)</Text>
                         <Text style={styles.goalWeight}> 
-                            {user.goalWeek ? `${user.goalWeek}Kg` : 'n/A'}
+                            {user.goalWeek ? `${user.goalWeek}Kg` : '- -'}
                         </Text>
                     </View>
 
@@ -88,7 +88,7 @@ const Member: React.FC = () => {
 
                         <Text>Olá {user?.name?.split(" ")[0]}, o seu peso atual é</Text>
                         <Text style={styles.currentWeightText}>
-                            {user.currentWeight ? `${user.currentWeight}Kg` : 'n/A'}
+                            {user.currentWeight ? `${user.currentWeight}Kg` : `${user.startingWeight}Kg`}
                         </Text>
                     </View>
 
@@ -96,7 +96,7 @@ const Member: React.FC = () => {
                         <Text style={[styles.goalText, { color: Colors.colorDanger }]}>Meta</Text>
                         <Text>(Final)</Text>
                         <Text style={styles.goalWeight}> 
-                            {user.goalWeight ? `${user.goalWeight}Kg` : 'n/A'}
+                            {user.goalWeight ? `${user.goalWeight}Kg` : '- -'}
                         </Text>
                     </View>
                 </View>

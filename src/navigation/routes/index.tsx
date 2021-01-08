@@ -4,11 +4,11 @@ import AuthRoutes from './auth.routes'
 import AppRoutes from './app.routes'
 import { useAuth } from '../../contexts/auth'
 import { ActivityIndicator } from 'react-native';
-import { Text, View } from '../../components/Themed';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { View } from '../../components/Themed';
+import WaitingApproval from '../../screens/WaitingApproval';
 
 const Routes: React.FC = () => {
-    const { signed, approved, acceptTerm , loading, signOut } = useAuth();
+    const { signed, approved, loading } = useAuth();
 
     if (loading) {
         return (
@@ -20,12 +20,7 @@ const Routes: React.FC = () => {
     
     if(signed && !approved) {
         return (
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <Text>Aguardando Aprovação</Text>
-                <TouchableOpacity onPress={() => signOut()}>
-                    <Text>Voltar para Login</Text>
-                </TouchableOpacity>
-            </View>
+            <WaitingApproval />
         )
     }
 
