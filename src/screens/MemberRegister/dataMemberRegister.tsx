@@ -8,6 +8,7 @@ import { FormHandles, SubmitHandler } from '@unform/core';
 import { UserService } from '../../service/UserService';
 import { useAuth } from '../../contexts/auth';
 import MemberInterface from '../../interfaces/member.interface';
+import AlertSnackBar, { ConfigAlertSnackBar } from '../../components/AlertSnackBar';
 
 
 const DataMemberRegister: React.FC = (props: any) => {
@@ -15,58 +16,75 @@ const DataMemberRegister: React.FC = (props: any) => {
     const formRef = useRef<FormHandles>(null);
     const userService = new UserService();
     const [currentProps, setProps] = useState<object>({});
+    const [alertSnackBarProp, setAlertSnackBarProp] = useState<ConfigAlertSnackBar>({} as ConfigAlertSnackBar);
 
     useEffect(() => {
         const params = props.route.params;
-        console.log(4, params);
         setProps(params)
     }, [])
 
     const handleConfirm: SubmitHandler<any> = async (data) => {
+        if (!data.startingWeight || !data.height) {
+            setAlertSnackBarProp({
+                message: "Todos os campos são obrigaorios!",
+                type: "warn",
+            });
+            return
+        }
+
         const userDTO: MemberInterface = {
             ...currentProps,
             startingWeight: data.startingWeight,
             height: data.height,
-            comments: data.comments.trim()
         } as MemberInterface;
 
         console.log(userDTO);
 
         const response = await userService.create(userDTO);
 
-        console.log("RESPONSE :", response.data);
-        
-        signIn({
-            email: userDTO.email,
-            password: userDTO.password
+        const duration = 4000;
+
+        setAlertSnackBarProp({
+            message: response.data.message,
+            type: "success",
+            duration
         });
+
+        setTimeout(() => { 
+            signIn({
+                email: userDTO.email,
+                password: userDTO.password
+            });
+        }, duration)
     };
 
     return (
-        <View style={styles.container}>
-            <View style={styles.boxImage}>
-                <Image
-                    style={styles.iconImage}
-                    source={require("../../../assets/icons/research.png")}
-                />
+        <>
+            <View style={styles.container}>
+                <View style={styles.boxImage}>
+                    <Image
+                        style={styles.iconImage}
+                        source={require("../../../assets/icons/research.png")}
+                    />
 
-                <Text style={styles.boxImageText}>Quase lá! Precisamos de algumas medidas</Text>
+                    <Text style={styles.boxImageText}>Quase lá! Precisamos de algumas medidas</Text>
+                </View>
+
+                <Form ref={formRef} onSubmit={handleConfirm} style={{ width: "100%" }}>
+                    <Input name="startingWeight" placeholder="Peso Inicial" keyboardType="decimal-pad" />
+                    <Input name="height" placeholder="Altura" keyboardType="number-pad" />
+
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={() => formRef.current?.submitForm()}
+                    >
+                        <Text style={styles.buttonText}>Finalizar Cadastro</Text>
+                    </TouchableOpacity>
+                </Form>
             </View>
-
-            <Form ref={formRef} onSubmit={handleConfirm} style={{ width: "100%" }}>
-                <Input name="startingWeight" placeholder="Peso Inicial" keyboardType="decimal-pad"/>
-                <Input name="height" placeholder="Altura" keyboardType="number-pad" />
-
-                <Input name="comments" placeholder="Observações" lines={5}/>
-
-                <TouchableOpacity
-                    style={styles.button}
-                    onPress={() => formRef.current?.submitForm()}
-                >
-                    <Text style={styles.buttonText}>Finalizar Cadastro</Text>
-                </TouchableOpacity>
-            </Form>
-        </View>
+            
+            <AlertSnackBar config={alertSnackBarProp} />
+        </>
     );
 };
 
