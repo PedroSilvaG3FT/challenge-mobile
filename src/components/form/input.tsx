@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useField } from "@unform/core";
-import { TextInput } from "react-native-gesture-handler";
 import { StyleSheet, View, Text } from "react-native";
 import Colors from "../../constants/Colors";
+import { TextInput } from 'react-native-paper';
 // import Animated from "react-native-reanimated";
 
 interface InputProps {
@@ -61,20 +61,21 @@ const Input: React.FC<InputProps> = (props) => {
 
   return (
     <View>
-      {(hasValue || isFocus) ? 
+      {/* {(hasValue || isFocus) ? 
         <Text style={[styles.textLabel, isFocus ? {color: Colors.colorPrimary} : {}]}>{props.placeholder}</Text> : 
         null
-      }
+      } */}
       <TextInput
         ref={inputRef}
         style={[
           styles.input, 
           props.style, 
-          isFocus ? styles.inputFocus : {},
-          props.lightMode ? styles.lightModeInput : {},
         ]}
+        mode="flat"
+        underlineColor="#FFF"
+        selectionColor={Colors.colorPrimary}
+        label={props.placeholder}
         defaultValue={defaultValue}
-        placeholder={props.placeholder}
         onFocus={handleFocus}
         editable={props.editable}
         onBlur={() => handleBlur()}
@@ -84,7 +85,14 @@ const Input: React.FC<InputProps> = (props) => {
         autoCapitalize={props.autoCapitalize}
         multiline={props.lines ? true : false}
         numberOfLines={props.lines}
-        placeholderTextColor={isFocus ? "transparent" : (props.lightMode ? "#A9A9A9" : "#FFF")} 
+
+        theme={{
+          colors: {
+            placeholder: '#FFF', 
+            text: '#FFF', 
+            primary: Colors.colorPrimary,
+          },
+        }}
       />
     </View>
 
@@ -101,15 +109,12 @@ const styles = StyleSheet.create({
   },
 
   input: {
-    width: "100%",
-    height: 60,
-    borderRadius: 10,
-    borderBottomWidth: 1,
-    color: "#FFF",
-    borderBottomColor: "#FFF",
+    height: 70,
     marginBottom: 8,
-    paddingHorizontal: 24,
+    backgroundColor: 'transparent',
     fontSize: 16,
+    // flex: 1,
+    justifyContent: 'flex-end'
   },
 
   lightModeInput: {
@@ -118,6 +123,6 @@ const styles = StyleSheet.create({
   },
 
   inputFocus: {
-    borderBottomColor: Colors.colorPrimary,
+    // borderBottomColor: Colors.colorPrimary,
   }
 });
