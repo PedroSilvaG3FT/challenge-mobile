@@ -71,7 +71,7 @@ const Profile: React.FC = () => {
             error => {
                 setAlertSnackBarProp({
                     message: error.error,
-                    type: "success",
+                    type: "error",
                 });
                 modalizeRef.current?.close();
             }
@@ -117,7 +117,6 @@ const Profile: React.FC = () => {
                                     {user.currentWeight || user.startingWeight}Kg
                                 </Text>
                             </RectButton>
-
                         </View>
                     </View>
                 </Form>

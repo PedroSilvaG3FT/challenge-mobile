@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { Text, View, StyleSheet } from "react-native";
 import { RectButton } from "react-native-gesture-handler";
 import { useAuth } from "../../contexts/auth";
@@ -8,37 +8,54 @@ import { useNavigation } from "@react-navigation/native";
 import { Form } from "@unform/mobile";
 import { FormHandles, SubmitHandler } from "@unform/core";
 import Input from "../../components/form/input";
+import AlertSnackBar, { ConfigAlertSnackBar } from "../../components/AlertSnackBar";
 
 const Login: React.FC = () => {
   const { signIn } = useAuth();
   const formRef = useRef<FormHandles>(null);
   const navigation = useNavigation();
+  const [alertSnackBarProp, setAlertSnackBarProp] = useState<ConfigAlertSnackBar>({} as ConfigAlertSnackBar);
+
 
   const handleLogin: SubmitHandler<any> = (data) => {
+    if(!data.email || !data.password) {
+
+      setAlertSnackBarProp({
+        message: "Preencha todos os campos",
+        type: "warn",
+      });
+      
+      return;
+    }
+
     signIn(data);
   };
 
   return (
-    <View style={styles.container}>
-      <Form ref={formRef} onSubmit={handleLogin} style={{ width: "100%" }}>
-        <Input name="email" placeholder="Usuário" autoCapitalize="none" />
-        <Input name="password" placeholder="Senha" secureTextEntry={true} autoCapitalize="none" />
+    <>
+      <View style={styles.container}>
+        <Form ref={formRef} onSubmit={handleLogin} style={{ width: "100%" }}>
+          <Input name="email" placeholder="Usuário" autoCapitalize="none" />
+          <Input name="password" placeholder="Senha" secureTextEntry={true} autoCapitalize="none" />
 
-        <RectButton
-          style={styles.button}
-          onPress={() => formRef.current?.submitForm()}
-        >
-          <Text style={styles.buttonText}>Entrar</Text>
-        </RectButton>
+          <RectButton
+            style={styles.button}
+            onPress={() => formRef.current?.submitForm()}
+          >
+            <Text style={styles.buttonText}>Entrar</Text>
+          </RectButton>
 
-        <Text
-          style={styles.singUpText}
-          onPress={() => navigation.navigate("EmailMemberRegister")}
-        >
-          Cadastre-se
+          <Text
+            style={styles.singUpText}
+            onPress={() => navigation.navigate("EmailMemberRegister")}
+          >
+            Cadastre-se
         </Text>
-      </Form>
-    </View>
+        </Form>
+      </View>
+
+      <AlertSnackBar config={alertSnackBarProp} />
+    </>
   );
 };
 

@@ -50,8 +50,11 @@ const Member: React.FC = () => {
                 const res = response.data; 
                 setUser(res);
                 
-                setRemainingGoalWeek(res.currentWeight - res.goalWeek);
-                setRemainingGoalWeight(res.currentWeight - res.goalWeight);
+                const goalWeek = res.goalWeek ? (res.currentWeight - res.goalWeek) : 0; 
+                const goalWeight = res.goalWeight ? (res.currentWeight - res.goalWeight) : 0; 
+
+                setRemainingGoalWeek(goalWeek);
+                setRemainingGoalWeight(goalWeight);
 
                 const _initalDay =  new Date(res.dateCreation);
                 const _currentDay = new Date();
@@ -133,7 +136,7 @@ const Member: React.FC = () => {
                 />
 
                 <View style={styles.summaryBox}>
-                    <Text style={styles.summaryLabel}> Resumo </Text>
+                    <Text style={styles.summaryLabel}> Visão geral </Text>
 
                     <View style={styles.summaryItemsBox}>
                         <View style={styles.summaryItem}>
@@ -147,7 +150,7 @@ const Member: React.FC = () => {
                         <View style={styles.summaryItem}>
                             <Text style={styles.summaryItemLabel}> Restam </Text>
                             <Text style={[styles.summaryItemValue, , { color: Colors.colorDangerLight }]}> 
-                                {remainingGoalWeek}Kg
+                                {remainingGoalWeek?.toFixed(2)}Kg
                             </Text>
                             <Text style={styles.summaryItemLabel}> Para a meta da semana </Text>
                         </View>
@@ -155,7 +158,7 @@ const Member: React.FC = () => {
                         <View style={styles.summaryItem}>
                             <Text style={styles.summaryItemLabel}> Restam </Text>
                             <Text style={[styles.summaryItemValue, , { color: Colors.colorDanger }]}>
-                                {remainingGoalWeight}Kg
+                                {remainingGoalWeight?.toFixed(2)}Kg
                             </Text>
                             <Text style={styles.summaryItemLabel}> Para a meta Final </Text>
                         </View>
@@ -230,6 +233,7 @@ const styles = StyleSheet.create({
 
     summaryItem: {
         flex: 1,
+        alignSelf: 'stretch',
         justifyContent: 'space-evenly',
         alignItems: 'center',
         minHeight: 108,
@@ -243,7 +247,7 @@ const styles = StyleSheet.create({
     },
 
     summaryItemValue: {
-        fontSize: 28,
+        fontSize: 26,
         textAlign: 'center',
         justifyContent: 'center'
     },

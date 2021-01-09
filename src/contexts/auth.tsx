@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import * as auth from "../service/auth";
 import api from "../service/api";
 import { UserService } from '../service/UserService';
+import AlertSnackBar, { ConfigAlertSnackBar } from '../components/AlertSnackBar';
 
 interface AuthContextData {
     signed: boolean;
@@ -22,6 +23,7 @@ export const AuthProvider: React.FC = ({ children }) => {
     const [user, setUser] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const userService = new UserService();
+    const [alertSnackBarProp, setAlertSnackBarProp] = useState<ConfigAlertSnackBar>({} as ConfigAlertSnackBar);
 
     useEffect(() => {
         async function loadStorageData() {
@@ -73,7 +75,10 @@ export const AuthProvider: React.FC = ({ children }) => {
                 AsyncStorage.setItem("@EMAuth:token", responseData.token);
             },
             error => {
-                console.log("ERRO", error.message);
+                setAlertSnackBarProp({
+                    message: "Email ou senha incorretos",
+                    type: "error",
+                });
             }
             
         );
@@ -88,6 +93,8 @@ export const AuthProvider: React.FC = ({ children }) => {
     return (
         <AuthContext.Provider value={{ signed: !!user, approved: user?.active, acceptTerm: user?.acceptTerm, user, signIn, signOut, getUser, loading }}>
             {children}
+            <AlertSnackBar config={alertSnackBarProp} />
+
         </AuthContext.Provider>
     );
 }
