@@ -1,7 +1,8 @@
 import AsyncStorage from '@react-native-community/async-storage';
+import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useRef, useState } from 'react';
 import { Dimensions, Image, StatusBar, StyleSheet } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { Modalize } from 'react-native-modalize';
 import GradientButton from '../../components/GradientButton';
 import MenuImagesModal from '../../components/modals/MenuImages';
@@ -11,16 +12,22 @@ import MemberInterface from '../../interfaces/member.interface';
 import { MemberMenuInterface } from '../../interfaces/memberMenu.interface';
 import { MenuUserService } from '../../service/MenuUserService';
 
+import CameraComponent from '../../components/Camera';
+
 const Menu: React.FC = () => {
     const [menuMember, setMenuMember] = useState({} as MemberMenuInterface);
     const windowHeight = Dimensions.get("window").height;
     const menuUserService = new MenuUserService();
     const modalizeRef = useRef<Modalize>(null);
+    const navigation = useNavigation();
+
+    const [showCamera, setShowCamera] = useState(false);
 
     const modalConfigOptions = {
         modalizeRef: modalizeRef,
         onCloseModal: onCloseModal,
         dataParam: {},
+        height: windowHeight / 2
     };
 
     useEffect(() => {
@@ -43,19 +50,34 @@ const Menu: React.FC = () => {
 
     function onCloseModal() { }
 
+    const onCloseCamera = (result: any) => {
+        console.log(result);
+        setShowCamera(false)
+    };
+
     if (!menuMember.days) {
         return (
-            <View style={stylesMenuEmpty.container}>
-                <View style={stylesMenuEmpty.boxImage}>
-                    <Image
-                        style={stylesMenuEmpty.iconImage}
-                        source={require("../../../assets/icons/real-food.png")}
-                    />
+            <>
+                <View style={stylesMenuEmpty.container}>
+                    <View style={stylesMenuEmpty.boxImage}>
+                        <Image
+                            style={stylesMenuEmpty.iconImage}
+                            source={require("../../../assets/icons/real-food.png")}
+                        />
 
-                    <Text style={stylesMenuEmpty.boxImageText}>- Sem Cardapio atribuido -</Text>
-                    <Text style={stylesMenuEmpty.boxImageText}>Solicite ao administrador</Text>
+                        <TouchableOpacity onPress={() => setShowCamera(true)}>
+                            <Text style={stylesMenuEmpty.boxImageText}>- Sem Cardapio atribuido -</Text>
+                            <Text style={stylesMenuEmpty.boxImageText}>Solicite ao administrador</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
-            </View>
+
+                <CameraComponent 
+                    visible={showCamera} 
+                    onClose={onCloseCamera}
+                />
+
+            </>
         )
     }
 
@@ -105,7 +127,7 @@ const Menu: React.FC = () => {
                 ref={modalizeRef}
                 snapPoint={windowHeight / 2}
                 modalHeight={windowHeight - 130}
-                
+
             >
                 <MenuImagesModal modalConfigOptions={modalConfigOptions} />
             </Modalize>

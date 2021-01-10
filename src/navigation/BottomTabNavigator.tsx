@@ -14,6 +14,7 @@ import Settings from '../screens/Settings';
 import Menu from '../screens/Menu';
 import Exercice from '../screens/Exercice';
 import Profile from '../screens/Profile';
+import CameraComponent from '../components/Camera';
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 
