@@ -8,7 +8,7 @@ import MenuImagesModal from '../../components/modals/MenuImages';
 import { Text, View } from '../../components/Themed';
 import Colors from '../../constants/Colors';
 import MemberInterface from '../../interfaces/member.interface';
-import { MemberMenuInterface } from '../../interfaces/memberMenu.interface';
+import { MemberMenuInterface, DayMenuInterface, MealInterface } from '../../interfaces/memberMenu.interface';
 import { MenuUserService } from '../../service/MenuUserService';
 
 const Menu: React.FC = () => {
@@ -20,8 +20,8 @@ const Menu: React.FC = () => {
     const modalConfigOptions = {
         modalizeRef: modalizeRef,
         onCloseModal: onCloseModal,
-        dataParam: {},
-        height: windowHeight - 130
+        height: windowHeight - 130,
+        data: {}
     };
 
     useEffect(() => {
@@ -37,7 +37,8 @@ const Menu: React.FC = () => {
         )
     }
 
-    const onOpen = () => {
+    const onOpen = (day: DayMenuInterface) => {
+        modalConfigOptions.data = day;
         modalizeRef.current?.open();
     };
 
@@ -91,7 +92,7 @@ const Menu: React.FC = () => {
 
                                     <GradientButton
                                         height={80}
-                                        onPress={() => onOpen()}
+                                        onPress={() => onOpen(day)}
                                         nameIcon="camera-enhance-outline"
                                         colors={[Colors.colorDanger, Colors.colorDangerLight]}
                                     />
@@ -105,8 +106,8 @@ const Menu: React.FC = () => {
 
             <Modalize
                 ref={modalizeRef}
-                snapPoint={windowHeight / 2}
-                modalHeight={windowHeight - 130}
+                snapPoint={modalConfigOptions.height - 100}
+                modalHeight={modalConfigOptions.height}
 
             >
                 <MenuImagesModal modalConfigOptions={modalConfigOptions} />

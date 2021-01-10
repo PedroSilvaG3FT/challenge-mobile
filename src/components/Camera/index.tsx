@@ -27,11 +27,10 @@ const CameraComponent: React.FC<CameraProps> = (props) => {
     }, [props.visible])
 
     if (hasPermission === null) {
-        console.log("PERMISSION NULL");
         return <View />;
     }
+
     if (hasPermission === false) {
-        console.log("PERMISSION FALSE");
         return <Text>No access to camera</Text>;
     }
 
@@ -43,6 +42,11 @@ const CameraComponent: React.FC<CameraProps> = (props) => {
         );
     }
 
+    function resultModal() {
+        setModalPreview(false);
+        return dataURItoBlob0(capturedImage.uri);
+    }
+
     async function takePicture() {
         if (!cameraRef) return;
 
@@ -51,10 +55,56 @@ const CameraComponent: React.FC<CameraProps> = (props) => {
         setModalPreview(true)
     }
 
-    function resultModal() {
-        setModalPreview(false);
-        return capturedImage.base64;
+    function dataURItoBlob0(dataURI: string) {
+        var binary;
+        
+        if (dataURI.split(',')[0].indexOf('base64') >= 0)
+            binary = atob(dataURI.split(',')[1]);
+        else
+            binary = unescape(dataURI.split(',')[1]);
+
+        var array = [];
+
+        for (var i = 0; i < binary.length; i++) {
+            array.push(binary.charCodeAt(i));
+        }
+
+        return new Blob([new Uint8Array(array)], {
+            type: 'image/jpg',
+        });
     }
+
+    function dataURItoBlob(dataURI: string) {
+        var byteString;
+        if (dataURI.split(',')[0].indexOf('base64') >= 0)
+            byteString = atob(dataURI.split(',')[1]);
+        else
+            byteString = unescape(dataURI.split(',')[1]);
+
+        var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+
+        var ia = new Uint8Array(byteString.length);
+        for (var i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+
+        return new Blob([ia], { 
+            type: mimeString 
+        });
+    }
+
+    async function uploadImageAsync(uri: string) {
+
+        const formData = new FormData();
+        // formData.append('file', {
+        //     uri,
+        //     name: "Image",
+        //     type: `image/${fileType}`,
+        // });
+
+        return formData;
+    }
+
 
     const resultPreview = (resultPreview: any) => {
         const { acceptImage } = resultPreview;

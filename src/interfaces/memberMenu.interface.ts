@@ -6,14 +6,16 @@ export interface MemberMenuInterface {
     days: DayMenuInterface[],
 }
 
-interface DayMenuInterface {
+export interface DayMenuInterface {
     dayId: number,
     dayName: string,
     numberDay: number,
     meals: MealInterface[]
 }
-interface MealInterface {
+export interface MealInterface {
+    menuItemId: number,
     typeMealName: string,
     typeMealId: number,
-    descripition: string
+    descripition: string,
+    imageItem: string
 }
