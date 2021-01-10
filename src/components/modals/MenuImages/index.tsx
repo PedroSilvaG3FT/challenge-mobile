@@ -61,7 +61,7 @@ const MenuImagesModal: React.FC<ModalImagesProps> = (props) => {
             imageItem: result
         } as MealInterface;
         
-        saveImageItem(result);
+        // saveImageItem(result);
     };
 
     return (
