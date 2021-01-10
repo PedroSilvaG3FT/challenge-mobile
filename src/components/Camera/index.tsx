@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { StyleSheet, View, Text, Modal, Image, StatusBar, Alert, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, Modal, Image, TouchableOpacity } from 'react-native';
 import { Camera } from 'expo-camera';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
+import PreviewImage from './previewImage';
 
 interface CameraProps {
     visible: boolean;
@@ -13,7 +14,7 @@ const CameraComponent: React.FC<CameraProps> = (props) => {
 
     const [type, setType] = useState(Camera.Constants.Type.back);
     const [hasPermission, setHasPermission] = useState(true);
-    const [capturedImage, setCapturedImage] = useState<string | null>(null);
+    const [capturedImage, setCapturedImage] = useState<any>(null);
     const [showModalPreview, setModalPreview] = useState(false);
 
     useEffect(() => {
@@ -42,23 +43,32 @@ const CameraComponent: React.FC<CameraProps> = (props) => {
     async function takePicture() {
         if (!cameraRef) return;
 
-        const data = await cameraRef.current.takePictureAsync();
-        setCapturedImage(data.uri);
+        const data = await cameraRef.current.takePictureAsync({ base64: true });
+        setCapturedImage(data);
         setModalPreview(true)
     }
 
     function resultModal() {
         setModalPreview(false);
-        return capturedImage;
+        return capturedImage.base64;
     }
+
+    const resultPreview = (result: any) => {
+        const { acceptImage } = result;
+        console.log(acceptImage)
+        if (acceptImage) {
+            const result = resultModal();
+            props.onClose(result);
+        }
+    };
 
     return (
         <>
             <Modal
                 animationType="slide"
-                visible={props.visible} 
+                visible={props.visible}
                 style={styles.container}
-                >
+            >
                 <Camera
                     style={{ flex: 1 }}
                     ref={cameraRef}
@@ -99,26 +109,8 @@ const CameraComponent: React.FC<CameraProps> = (props) => {
                     animationType="slide"
                     transparent={false}
                     visible={showModalPreview}
-                    onRequestClose={() => {
-                        Alert.alert('Modal has been closed.');
-                    }}
                 >
-                    <View style={{ flex: 1, margin: 20, justifyContent: 'center', alignItems: 'center' }}>
-                        <TouchableOpacity
-                            style={{ backgroundColor: 'red', height: 40, width: 80, borderRadius: 90 }}
-                            onPress={() => {
-                                const result = resultModal();
-                                props.onClose(result)
-                            }}>
-                        
-                            <Text>Fechar</Text>
-                        </TouchableOpacity>
-
-                        <Image
-                            style={{ width: '100%', height: 300 }}
-                            source={{ uri: capturedImage }}
-                        />
-                    </View>
+                <PreviewImage imageUri={capturedImage.uri} onSelectResult={resultPreview}/>
                 </Modal>
             }
         </>
@@ -144,7 +136,7 @@ const styles = StyleSheet.create({
     },
 
     actionBoxArea: {
-        height: 112,
+        height: 144,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
