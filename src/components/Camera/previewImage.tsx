@@ -1,5 +1,6 @@
 import React from 'react';
-import { Image, Text, TouchableOpacity, View } from 'react-native';
+import { ImageBackground, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import Colors from '../../constants/Colors';
 
 interface PreviewImageProps {
     onSelectResult?: any;
@@ -7,33 +8,66 @@ interface PreviewImageProps {
 }
 
 const PreviewImage: React.FC<PreviewImageProps> = (props) => {
-  return (
+    return (
+        <View style={styles.container}>
+            <ImageBackground source={{ uri: props.imageUri }} style={styles.image}>
+                <View style={styles.actionBoxArea}>
+                    <TouchableOpacity
+                        style={{...styles.buttonAction, backgroundColor: Colors.colorDanger}}
+                        onPress={() => props.onSelectResult({ acceptImage: false })
+                        }>
 
-      <View style={{ flex: 1, margin: 20, justifyContent: 'center', alignItems: 'center' }}>
-          <TouchableOpacity
-              style={{ backgroundColor: 'red', height: 40, width: 80, borderRadius: 90 }}
-              onPress={() => {
-                  props.onSelectResult({
-                      acceptImage: true
-                  })
-              }}>
+                        <Text style={styles.buttonActionText}>Descartar</Text>
+                    </TouchableOpacity>
 
-              <Text>Fechar</Text>
-          </TouchableOpacity>
+                    <TouchableOpacity
+                        style={{...styles.buttonAction, backgroundColor: Colors.colorSuccess}}
+                        onPress={() => props.onSelectResult({ acceptImage: true })
+                        }>
 
-          <Image
-              style={{
-                  width: '100%',
-                  height: 300,
-                  resizeMode: 'contain',
-                  borderWidth: 1,
-                  borderColor: 'red'
-              }}
-              source={{ uri: props.imageUri }}
-          />
-          
-      </View>
-  );
+                        <Text style={styles.buttonActionText}>Salvar Imagem</Text>
+                    </TouchableOpacity>
+                </View>
+            </ImageBackground>
+        </View>
+    )
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+    },
+
+    image: {
+        flex: 1,
+        resizeMode: "cover",
+        justifyContent: "flex-end"
+    },
+
+    actionBoxArea: {
+        height: 144,
+        alignItems: 'center',
+        flexDirection: 'row',
+        paddingHorizontal: 40,
+        backgroundColor: "#000000a0",
+        justifyContent: 'space-between',
+
+        borderTopLeftRadius: 12,
+        borderTopRightRadius: 12,
+    },
+
+    buttonAction: {
+        height: 50,
+        borderRadius: 20,
+        padding: 12,
+        justifyContent: 'center'
+    },
+
+    buttonActionText: {
+        color: "#FFF",
+        fontSize: 16
+    }
+
+})
 
 export default PreviewImage;

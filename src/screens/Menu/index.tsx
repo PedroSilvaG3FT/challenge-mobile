@@ -51,7 +51,6 @@ const Menu: React.FC = () => {
     function onCloseModal() { }
 
     const onCloseCamera = (result: any) => {
-        console.log(result);
         setShowCamera(false)
     };
 
@@ -72,8 +71,8 @@ const Menu: React.FC = () => {
                     </View>
                 </View>
 
-                <CameraComponent 
-                    visible={showCamera} 
+                <CameraComponent
+                    visible={showCamera}
                     onClose={onCloseCamera}
                 />
 

@@ -53,13 +53,16 @@ const CameraComponent: React.FC<CameraProps> = (props) => {
         return capturedImage.base64;
     }
 
-    const resultPreview = (result: any) => {
-        const { acceptImage } = result;
-        console.log(acceptImage)
-        if (acceptImage) {
-            const result = resultModal();
-            props.onClose(result);
+    const resultPreview = (resultPreview: any) => {
+        const { acceptImage } = resultPreview;
+
+        if (!acceptImage) {
+            setModalPreview(false);
+            return;
         }
+
+        const result = resultModal();
+        props.onClose(result);
     };
 
     return (
@@ -110,7 +113,7 @@ const CameraComponent: React.FC<CameraProps> = (props) => {
                     transparent={false}
                     visible={showModalPreview}
                 >
-                <PreviewImage imageUri={capturedImage.uri} onSelectResult={resultPreview}/>
+                    <PreviewImage imageUri={capturedImage.uri} onSelectResult={resultPreview} />
                 </Modal>
             }
         </>
@@ -137,18 +140,15 @@ const styles = StyleSheet.create({
 
     actionBoxArea: {
         height: 144,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
         alignItems: 'center',
-        paddingHorizontal: 12
-    },
+        flexDirection: 'row',
+        paddingHorizontal: 40,
+        backgroundColor: "#000000a0",
+        justifyContent: 'space-between',
 
-    buttonTake: {
-        height: 80,
-        width: 80,
-        borderRadius: 50,
-        backgroundColor: '#FFF'
-    }
+        borderTopLeftRadius:  12,
+        borderTopRightRadius: 12,
+    },
 });
 
 export default CameraComponent;
