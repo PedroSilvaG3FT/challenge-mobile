@@ -81,7 +81,7 @@ const Member: React.FC = () => {
                         </Text>
                     </View>
 
-                    <View style={styles.centerAlignItems}>
+                    <View style={{...styles.centerAlignItems, flex: 1}}>
                         <Image
                             style={styles.avatarImage}
                             source={{
@@ -89,7 +89,7 @@ const Member: React.FC = () => {
                             }}
                         />
 
-                        <Text>Olá {user?.name?.split(" ")[0]}, o seu peso atual é</Text>
+                        <Text style={styles.userInfoLabel}>Olá {user?.name?.split(" ")[0]}, o seu peso atual é</Text>
                         <Text style={styles.currentWeightText}>
                             {user.currentWeight ? `${user.currentWeight}Kg` : `${user.startingWeight}Kg`}
                         </Text>
@@ -192,6 +192,11 @@ const styles = StyleSheet.create({
         height: 100,
         marginBottom: 8,
         borderRadius: 50,
+    },
+
+    userInfoLabel: { 
+        textAlign: 'center', 
+        paddingHorizontal: 4 
     },
 
     currentWeightText: {

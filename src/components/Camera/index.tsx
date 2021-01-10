@@ -26,10 +26,12 @@ const CameraComponent: React.FC<CameraProps> = (props) => {
     }, [props.visible])
 
     if (hasPermission === null) {
-        return <View />;
+        console.log("PERMISSION NULL");
+        // return <View />;
     }
     if (hasPermission === false) {
-        return <Text>No access to camera</Text>;
+        console.log("PERMISSION FALSE");
+        // return <Text>No access to camera</Text>;
     }
 
     function alterCamera() {

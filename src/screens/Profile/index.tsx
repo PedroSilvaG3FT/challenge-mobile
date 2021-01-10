@@ -113,7 +113,7 @@ const Profile: React.FC = () => {
                             <Text style={styles.labelBoxUpdateWeight}>Atualizar Peso Atual</Text>
 
                             <RectButton style={styles.buttonUpdateWeight}>
-                                <Text style={styles.buttonUpdateWeightText} onPress={() => onOpen()}>
+                                <Text style={styles.buttonUpdateWeightText} allowFontScaling={false} onPress={() => onOpen()}>
                                     {user.currentWeight || user.startingWeight}Kg
                                 </Text>
                             </RectButton>

@@ -1,8 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage';
-import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useRef, useState } from 'react';
 import { Dimensions, Image, StatusBar, StyleSheet } from 'react-native';
-import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
+import { ScrollView } from 'react-native-gesture-handler';
 import { Modalize } from 'react-native-modalize';
 import GradientButton from '../../components/GradientButton';
 import MenuImagesModal from '../../components/modals/MenuImages';
@@ -12,22 +11,17 @@ import MemberInterface from '../../interfaces/member.interface';
 import { MemberMenuInterface } from '../../interfaces/memberMenu.interface';
 import { MenuUserService } from '../../service/MenuUserService';
 
-import CameraComponent from '../../components/Camera';
-
 const Menu: React.FC = () => {
     const [menuMember, setMenuMember] = useState({} as MemberMenuInterface);
     const windowHeight = Dimensions.get("window").height;
     const menuUserService = new MenuUserService();
     const modalizeRef = useRef<Modalize>(null);
-    const navigation = useNavigation();
-
-    const [showCamera, setShowCamera] = useState(false);
 
     const modalConfigOptions = {
         modalizeRef: modalizeRef,
         onCloseModal: onCloseModal,
         dataParam: {},
-        height: windowHeight / 2
+        height: windowHeight - 130
     };
 
     useEffect(() => {
@@ -37,7 +31,6 @@ const Menu: React.FC = () => {
     async function getMenuUser() {
         let userStorage = await AsyncStorage.getItem("@EMAuth:user") as string;
         const storagedUser: MemberInterface = JSON.parse(userStorage);
-
         menuUserService.getById(storagedUser.id as number).then(
             response => setMenuMember(response.data),
             error => console.log("ERROR :", error)
@@ -50,10 +43,6 @@ const Menu: React.FC = () => {
 
     function onCloseModal() { }
 
-    const onCloseCamera = (result: any) => {
-        setShowCamera(false)
-    };
-
     if (!menuMember.days) {
         return (
             <>
@@ -64,18 +53,10 @@ const Menu: React.FC = () => {
                             source={require("../../../assets/icons/real-food.png")}
                         />
 
-                        <TouchableOpacity onPress={() => setShowCamera(true)}>
-                            <Text style={stylesMenuEmpty.boxImageText}>- Sem Cardapio atribuido -</Text>
-                            <Text style={stylesMenuEmpty.boxImageText}>Solicite ao administrador</Text>
-                        </TouchableOpacity>
+                        <Text style={stylesMenuEmpty.boxImageText}>- Sem Cardapio atribuido -</Text>
+                        <Text style={stylesMenuEmpty.boxImageText}>Solicite ao administrador</Text>
                     </View>
                 </View>
-
-                <CameraComponent
-                    visible={showCamera}
-                    onClose={onCloseCamera}
-                />
-
             </>
         )
     }
@@ -95,8 +76,8 @@ const Menu: React.FC = () => {
                             <View style={styles.boxDay} key={String(index)}>
                                 <Text style={styles.boxMenuLabel}> {day.dayName} </Text>
 
-                                <View style={styles.boxDayContent}>
-                                    <View>
+                                <View style={styles.boxDayContainer}>
+                                    <View style={styles.boxDayContent}>
                                         {day.meals.map((meals, indexMeal) => (
                                             <View style={styles.boxMeal} key={String(indexMeal)}>
                                                 <Text style={styles.textMeal}>
@@ -161,11 +142,15 @@ const styles = StyleSheet.create({
         borderRadius: 8,
     },
 
-    boxDayContent: {
+    boxDayContainer: {
         justifyContent: 'space-between',
+        backgroundColor: 'transparent',
         alignItems: 'center',
         flexDirection: 'row',
-        backgroundColor: 'transparent'
+    },
+
+    boxDayContent: {
+        flex: 1
     },
 
     boxMenuLabel: {
