@@ -18,20 +18,21 @@ const CameraComponent: React.FC<CameraProps> = (props) => {
     const [showModalPreview, setModalPreview] = useState(false);
 
     useEffect(() => {
+        if(!props.visible) return;
+        
         (async () => {
-            const { status } = await Camera.getPermissionsAsync();
-            setHasPermission(status === 'granted')
-        })
-
+            const { status } = await Camera.requestPermissionsAsync();
+            setHasPermission(status === 'granted');
+        })();
     }, [props.visible])
 
     if (hasPermission === null) {
         console.log("PERMISSION NULL");
-        // return <View />;
+        return <View />;
     }
     if (hasPermission === false) {
         console.log("PERMISSION FALSE");
-        // return <Text>No access to camera</Text>;
+        return <Text>No access to camera</Text>;
     }
 
     function alterCamera() {
