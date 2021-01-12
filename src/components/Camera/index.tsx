@@ -3,7 +3,6 @@ import { StyleSheet, View, Text, Modal, Image, TouchableOpacity } from 'react-na
 import { Camera } from 'expo-camera';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import PreviewImage from './previewImage';
-
 interface CameraProps {
     visible: boolean;
     onClose?: any;
@@ -44,7 +43,7 @@ const CameraComponent: React.FC<CameraProps> = (props) => {
 
     function resultModal() {
         setModalPreview(false);
-        return dataURItoBlob0(capturedImage.uri);
+        return capturedImage.base64;
     }
 
     async function takePicture() {
@@ -53,25 +52,6 @@ const CameraComponent: React.FC<CameraProps> = (props) => {
         const data = await cameraRef.current.takePictureAsync({ base64: true });
         setCapturedImage(data);
         setModalPreview(true)
-    }
-
-    function dataURItoBlob0(dataURI: string) {
-        var binary;
-        
-        if (dataURI.split(',')[0].indexOf('base64') >= 0)
-            binary = atob(dataURI.split(',')[1]);
-        else
-            binary = unescape(dataURI.split(',')[1]);
-
-        var array = [];
-
-        for (var i = 0; i < binary.length; i++) {
-            array.push(binary.charCodeAt(i));
-        }
-
-        return new Blob([new Uint8Array(array)], {
-            type: 'image/jpg',
-        });
     }
 
     function dataURItoBlob(dataURI: string) {
@@ -88,23 +68,12 @@ const CameraComponent: React.FC<CameraProps> = (props) => {
             ia[i] = byteString.charCodeAt(i);
         }
 
-        return new Blob([ia], { 
-            type: mimeString 
-        });
+        const response = new Blob([ia], { type: mimeString }); 
+
+        // const file = RNFetchBlob.wrap(Platform.OS === 'ios' ? dataURI.replace('file://', '') : dataURI);
+
+        return response;
     }
-
-    async function uploadImageAsync(uri: string) {
-
-        const formData = new FormData();
-        // formData.append('file', {
-        //     uri,
-        //     name: "Image",
-        //     type: `image/${fileType}`,
-        // });
-
-        return formData;
-    }
-
 
     const resultPreview = (resultPreview: any) => {
         const { acceptImage } = resultPreview;

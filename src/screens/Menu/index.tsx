@@ -32,7 +32,9 @@ const Menu: React.FC = () => {
         let userStorage = await AsyncStorage.getItem("@EMAuth:user") as string;
         const storagedUser: MemberInterface = JSON.parse(userStorage);
         menuUserService.getById(storagedUser.id as number).then(
-            response => setMenuMember(response.data),
+            response => {
+                setMenuMember(response.data);
+            },
             error => console.log("ERROR :", error)
         )
     }
@@ -42,7 +44,9 @@ const Menu: React.FC = () => {
         modalizeRef.current?.open();
     };
 
-    function onCloseModal() { }
+    function onCloseModal() { 
+        getMenuUser();
+    }
 
     if (!menuMember.days) {
         return (

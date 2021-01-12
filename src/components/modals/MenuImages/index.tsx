@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { Image, ScrollView, StyleSheet } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { IHandles } from 'react-native-modalize/lib/options';
 import Colors from '../../../constants/Colors';
-import { DayMenuInterface, MealInterface } from '../../../interfaces/memberMenu.interface';
+import { DayMenuInterface } from '../../../interfaces/memberMenu.interface';
 import { MenuUserService } from '../../../service/MenuUserService';
 import CameraComponent from '../../Camera';
 import { Text, View } from '../../Themed';
+import { Feather as Icon } from '@expo/vector-icons';
 
 interface ModalImagesProps {
     modalRef?: React.RefObject<IHandles>,
@@ -19,7 +20,7 @@ const MenuImagesModal: React.FC<ModalImagesProps> = (props) => {
     const { modalConfigOptions } = props;
     const [showCamera, setShowCamera] = useState(false);
     const [day, setDay] = useState<DayMenuInterface>({} as DayMenuInterface);
-    const [itemSelected, setItemSelected] = useState<MealInterface | null>(null);
+    const [itemSelected, setItemSelected] = useState<number>(0);
 
     const menuUserService = new MenuUserService();
 
@@ -34,50 +35,66 @@ const MenuImagesModal: React.FC<ModalImagesProps> = (props) => {
         modalConfigOptions.modalizeRef?.current?.close();
     }
 
-    function saveImageItem(file: File) {
-        menuUserService.update(file, Number(itemSelected?.menuItemId)).then(
+    function saveImageItem(itemImage: any) {
+        menuUserService.update(itemImage).then(
             response => {
-                setItemSelected(null)
-                // console.log(response.data)
+                setItemSelected(0);
+                closeModal();
             },
             error => {
-                // console.log("Deu ruim");
+                console.log("Deu ruim");
             }
         )
     }
 
     function openCamera(item: any) {
-        setItemSelected(item);
+        setItemSelected(item.menuItemId);
         setShowCamera(true)
     }
 
     const onCloseCamera = (result: any) => {
         setShowCamera(false);
 
-        if(!result) return;
+        if (!result) return;
 
-        const newItem = {
-            menuItemId: itemSelected?.menuItemId,
-            imageItem: result
-        } as MealInterface;
-        
-        // saveImageItem(result);
+        const newItemImage = {
+            menuItemId: itemSelected,
+            image64: result
+        };
+
+        saveImageItem(newItemImage);
     };
 
     return (
         <>
             <View style={{ ...styles.container, height: modalConfigOptions.height || "auto" }}>
-                <Text style={styles.title}>Refeições de {day.dayName}</Text>
+                <ScrollView>
+                    <Text style={styles.title}>Refeições de {day.dayName}</Text>
 
-                {day?.meals?.map((meal, index) => (
-                    <View style={styles.mealBox} key={index}>
-                        <Text>{meal.typeMealName}</Text>
+                    {day?.meals?.map((meal, index) => (
+                        <View style={styles.mealBox} key={index}>
+                            <Text style={styles.labelImage}>{meal.typeMealName}</Text>
 
-                        <TouchableOpacity style={styles.imageBox} onPress={() => openCamera(meal)}>
+                            <TouchableOpacity
+                                style={[styles.imageBox, meal.imageItem ? { backgroundColor: 'transparent' } : {}]}
+                                onPress={() => openCamera(meal)}
+                            >
+                                {meal.imageItem ? (
 
-                        </TouchableOpacity>
-                    </View>
-                ))}
+                                    <Image
+                                        style={styles.image}
+                                        source={{ uri: `data:image/png;base64, ${meal.imageItem}` }}
+                                    />
+                                ) :
+                                    <View style={styles.boxAddImage}>
+                                        <Icon name="camera" size={44} color="#FFFFF0" />
+                                        <Text>Adicionar Imagem</Text>
+                                    </View>
+                                }
+                            </TouchableOpacity>
+                        </View>
+                    ))}
+                </ScrollView>
             </View>
 
             <CameraComponent
@@ -108,12 +125,30 @@ const styles = StyleSheet.create({
         borderRadius: 8,
     },
 
-    imageBox: {
-        width: 80,
-        height: 80,
-        borderRadius: 12,
-        backgroundColor: Colors.colorSuccess
+    labelImage: {
+        marginVertical: 12,
+        textAlign: 'center'
     },
+
+    imageBox: {
+        maxHeight: 300,
+        borderRadius: 12,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: Colors.colorDanger
+    },
+
+    image: {
+        width: "100%",
+        height: "100%",
+        resizeMode: "contain",
+    },
+
+    boxAddImage: {
+        alignItems: 'center',
+        paddingVertical: 12,
+        backgroundColor: 'transparent',
+    }
 
 })
 
