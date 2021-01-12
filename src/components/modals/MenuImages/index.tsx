@@ -8,6 +8,7 @@ import { MenuUserService } from '../../../service/MenuUserService';
 import CameraComponent from '../../Camera';
 import { Text, View } from '../../Themed';
 import { Feather as Icon } from '@expo/vector-icons';
+import { useAuth } from '../../../contexts/auth';
 
 interface ModalImagesProps {
     modalRef?: React.RefObject<IHandles>,

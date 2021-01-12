@@ -15,6 +15,8 @@ interface AuthContextData {
     signIn(login: LoginInterface): Promise<void>;
     signOut(): void;
     getUser(): void;
+    showLoading(): void;
+    hideLoading(): void;
 }
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
@@ -26,6 +28,7 @@ export const AuthProvider: React.FC = ({ children }) => {
     const [alertSnackBarProp, setAlertSnackBarProp] = useState<ConfigAlertSnackBar>({} as ConfigAlertSnackBar);
 
     useEffect(() => {
+        console.log("OPA", loading)
         async function loadStorageData() {
             const storagedUser: any = await AsyncStorage.getItem("@EMAuth:user");
             const storagedToken = await AsyncStorage.getItem("@EMAuth:token");
@@ -46,6 +49,14 @@ export const AuthProvider: React.FC = ({ children }) => {
             getUser();
         }
     },[user])
+
+    function showLoading() {
+        setLoading(true);
+    }
+
+    function hideLoading() {
+        setLoading(false);
+    }
 
 
     async function getUser() {
@@ -91,7 +102,18 @@ export const AuthProvider: React.FC = ({ children }) => {
     }
 
     return (
-        <AuthContext.Provider value={{ signed: !!user, approved: user?.active, acceptTerm: user?.acceptTerm, user, signIn, signOut, getUser, loading }}>
+        <AuthContext.Provider value={{ 
+            signed: !!user, 
+            approved: user?.active, 
+            acceptTerm: user?.acceptTerm, 
+            user, 
+            signIn, 
+            signOut, 
+            getUser, 
+            loading,
+            showLoading,
+            hideLoading 
+            }}>
             {children}
             <AlertSnackBar config={alertSnackBarProp} />
 

@@ -2,7 +2,7 @@ import React from 'react';
 import { RectButton } from 'react-native-gesture-handler';
 import { LinearGradient } from 'expo-linear-gradient';
 import Colors from '../../constants/Colors';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 
 interface GradientButtonProps {
