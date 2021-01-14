@@ -18,7 +18,7 @@ const lightModeStyle = {
 }
 
 export default {
-  colorPrimary: tintColorLight,
+  colorPrimary: '#2f95dc',
   colorDangerLight: '#FF8C00',
   colorDanger: '#DC143C',
   colorSuccess: '#3CB371',
