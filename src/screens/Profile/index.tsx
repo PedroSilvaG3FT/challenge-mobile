@@ -5,6 +5,7 @@ import { View, Text, StyleSheet, Image, Button } from 'react-native';
 import { Form } from '@unform/mobile';
 import Input from '../../components/form/input';
 import Colors from '../../constants/Colors';
+import GlobalStyle from '../../constants/GlobalStyle';
 import AsyncStorage from '@react-native-community/async-storage';
 import MemberInterface from '../../interfaces/member.interface';
 import { UserService } from '../../service/UserService';
@@ -106,8 +107,15 @@ const Profile: React.FC = () => {
                     <View style={styles.separator}></View>
 
                     <View style={styles.inlineInput}>
-                        <Input name="phoneNumber" placeholder="Telefone" keyboardType="number-pad" />
-                        <Input name="height" placeholder="Altura" keyboardType="decimal-pad" />
+                        <View style={GlobalStyle.formField}>
+                            <Text style={GlobalStyle.label}>Telefone</Text>
+                            <Input name="phoneNumber" style={GlobalStyle.input} keyboardType="number-pad" />
+                        </View>
+
+                        <View style={GlobalStyle.formField}>
+                            <Text style={GlobalStyle.label}>Altura</Text>
+                            <Input name="height" style={GlobalStyle.input} keyboardType="decimal-pad" />
+                        </View>
 
                         <View style={styles.boxUpdateWeight}>
                             <Text style={styles.labelBoxUpdateWeight}>Atualizar Peso Atual</Text>
@@ -220,7 +228,7 @@ const styles = StyleSheet.create({
 
     buttonUpdateWeightText: {
         color: "#FFF",
-        fontSize: 25,
+        fontSize: 22,
     },
 
     labelBoxUpdateWeight: {
@@ -240,7 +248,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'flex-start',
         justifyContent: 'space-evenly'
-    }
+    },
 });
 
 export default Profile;

@@ -25,6 +25,8 @@ export default {
 
   bgDarkPrimary: "black",
   bgDarkSecondary: "#1C1C1C",
+
+  textLight: "#FFF",
   
   light: darkModeStyle,
   dark: darkModeStyle,

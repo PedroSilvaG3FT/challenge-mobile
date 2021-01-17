@@ -61,10 +61,6 @@ const Input: React.FC<InputProps> = (props) => {
 
   return (
     <View>
-      {/* {(hasValue || isFocus) ? 
-        <Text style={[styles.textLabel, isFocus ? {color: Colors.colorPrimary} : {}]}>{props.placeholder}</Text> : 
-        null
-      } */}
       <TextInput
         ref={inputRef}
         style={[
@@ -102,27 +98,12 @@ const Input: React.FC<InputProps> = (props) => {
 export default Input;
 
 const styles = StyleSheet.create({
-  textLabel: {
-    marginLeft: 12,
-    fontSize: 12,
-    color: '#FFF'
-  },
-
   input: {
-    height: 70,
-    marginBottom: 8,
+    maxHeight: 60,
     backgroundColor: 'transparent',
     fontSize: 16,
+
     // flex: 1,
-    justifyContent: 'flex-end'
+    // justifyContent: 'flex-end'
   },
-
-  lightModeInput: {
-    borderBottomColor: Colors.bgDarkSecondary,
-    color: Colors.bgDarkSecondary,
-  },
-
-  inputFocus: {
-    // borderBottomColor: Colors.colorPrimary,
-  }
 });
