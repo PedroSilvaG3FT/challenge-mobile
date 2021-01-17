@@ -4,11 +4,11 @@ import AuthRoutes from './auth.routes'
 import AppRoutes from './app.routes'
 import { useAuth } from '../../contexts/auth'
 import { ActivityIndicator, Modal } from 'react-native';
-import { View } from '../../components/Themed';
 import WaitingApproval from '../../screens/WaitingApproval';
+import Terms from '../../screens/Terms';
 
 const Routes: React.FC = () => {
-    const { signed, approved, loading } = useAuth();
+    const { signed, approved, loading, acceptTerm } = useAuth();
 
     if (loading) {
         return (
@@ -17,12 +17,9 @@ const Routes: React.FC = () => {
             </Modal>
         )
     }
-    
-    if(signed && !approved) {
-        return (
-            <WaitingApproval />
-        )
-    }
+
+    if (signed && !acceptTerm) { return <Terms /> }
+    if (signed && !approved) { return <WaitingApproval /> }
 
     return signed ? <AppRoutes /> : <AuthRoutes />;
 }

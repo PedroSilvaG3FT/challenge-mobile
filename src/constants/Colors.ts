@@ -23,6 +23,7 @@ export default {
   colorDanger: '#DC143C',
   colorSuccess: '#3CB371',
 
+  bgDarkPrimary: "black",
   bgDarkSecondary: "#1C1C1C",
   
   light: darkModeStyle,

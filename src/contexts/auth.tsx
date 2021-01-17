@@ -28,7 +28,6 @@ export const AuthProvider: React.FC = ({ children }) => {
     const [alertSnackBarProp, setAlertSnackBarProp] = useState<ConfigAlertSnackBar>({} as ConfigAlertSnackBar);
 
     useEffect(() => {
-        console.log("OPA", loading)
         async function loadStorageData() {
             const storagedUser: any = await AsyncStorage.getItem("@EMAuth:user");
             const storagedToken = await AsyncStorage.getItem("@EMAuth:token");
@@ -69,9 +68,12 @@ export const AuthProvider: React.FC = ({ children }) => {
                 if (storagedUser === JSON.stringify(userResponse)) {
                     return;
                 }
-
+                
                 setUser(userResponse);
                 AsyncStorage.setItem("@EMAuth:user", JSON.stringify(response.data));
+            },
+            error => {
+                console.log("ERROR ");
             }
         )
     }

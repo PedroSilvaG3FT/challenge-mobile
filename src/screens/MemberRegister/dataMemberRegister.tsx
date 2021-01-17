@@ -9,10 +9,11 @@ import { UserService } from '../../service/UserService';
 import { useAuth } from '../../contexts/auth';
 import MemberInterface from '../../interfaces/member.interface';
 import AlertSnackBar, { ConfigAlertSnackBar } from '../../components/AlertSnackBar';
-
+import { useNavigation } from "@react-navigation/native";
 
 const DataMemberRegister: React.FC = (props: any) => {
     const { signIn } = useAuth();
+    const navigation = useNavigation();
     const formRef = useRef<FormHandles>(null);
     const userService = new UserService();
     const [currentProps, setProps] = useState<object>({});
@@ -55,7 +56,7 @@ const DataMemberRegister: React.FC = (props: any) => {
                 email: userDTO.email,
                 password: userDTO.password
             });
-        }, duration)
+        }, duration);
     };
 
     return (
