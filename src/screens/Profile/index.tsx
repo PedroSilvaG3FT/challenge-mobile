@@ -132,8 +132,8 @@ const Profile: React.FC = () => {
                         <View style={styles.boxUpdateWeight}>
                             <Text style={styles.labelBoxUpdateWeight}>Atualizar Peso Atual</Text>
 
-                            <RectButton style={styles.buttonUpdateWeight}>
-                                <Text style={styles.buttonUpdateWeightText} allowFontScaling={false} onPress={() => onOpen()}>
+                            <RectButton style={styles.buttonUpdateWeight} onPress={() => onOpen()}>
+                                <Text style={styles.buttonUpdateWeightText} allowFontScaling={false}>
                                     {user.currentWeight || user.startingWeight}Kg
                                 </Text>
                             </RectButton>
@@ -144,7 +144,6 @@ const Profile: React.FC = () => {
                 <GradientButton
                     height={60}
                     title="Salvar"
-                    style={styles.button}
                     nameIcon="account-check-outline"
                     onPress={() => formRef.current?.submitForm()}
                 />
