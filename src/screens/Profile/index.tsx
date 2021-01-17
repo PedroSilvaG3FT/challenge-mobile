@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { FormHandles, SubmitHandler } from '@unform/core';
-import { RectButton, TouchableOpacity } from 'react-native-gesture-handler';
+import { RectButton } from 'react-native-gesture-handler';
 import { View, Text, StyleSheet, Image, Button, Dimensions } from 'react-native';
 import { Form } from '@unform/mobile';
 import Input from '../../components/form/input';
@@ -10,10 +10,8 @@ import AsyncStorage from '@react-native-community/async-storage';
 import MemberInterface from '../../interfaces/member.interface';
 import { UserService } from '../../service/UserService';
 import { Modalize } from 'react-native-modalize';
-import { WeightUserService } from '../../service/WeightUserService';
 import GradientButton from '../../components/GradientButton';
 import AlertSnackBar, { ConfigAlertSnackBar } from '../../components/AlertSnackBar';
-import InputMask from '../../components/form/inputMask';
 import ModalUpdateWeight from '../../components/modals/UpdateWeight';
 
 const modalHeight = 500;
@@ -23,7 +21,6 @@ const Profile: React.FC = () => {
     const modalizeRef = useRef<Modalize>(null);
     
     const userService = new UserService();
-    const weightUserService = new WeightUserService();
     const windowHeight = Dimensions.get("window").height;
 
     const [alertSnackBarProp, setAlertSnackBarProp] = useState<ConfigAlertSnackBar>({} as ConfigAlertSnackBar);
@@ -153,33 +150,6 @@ const Profile: React.FC = () => {
                 />
             </View>
 
-            <AlertSnackBar config={alertSnackBarProp} />
-
-            {/* <Modalize ref={modalizeRef}
-                snapPoint={modalHeight}
-                modalHeight={modalHeight}
-            >
-                <View style={styles.containerModal}>
-                    <Form ref={formRef} onSubmit={handleSubmitNewWeight} style={{ width: "100%" }}>
-                        <Input
-                            name="weight"
-                            placeholder="Novo Peso"
-                            keyboardType="decimal-pad"
-                        />
-
-                        <GradientButton
-                            height={60}
-                            nameIcon="check"
-                            style={styles.button}
-                            title="Atualizar Peso atual"
-                            onPress={() => formRef.current?.submitForm()}
-                        />
-                    </Form>
-                </View>
-
-            </Modalize> */}
-
-
             <Modalize
                 ref={modalizeRef}
                 snapPoint={modalHeight}
@@ -188,24 +158,16 @@ const Profile: React.FC = () => {
             >
                 <ModalUpdateWeight modalConfigOptions={modalConfigOptions} />
             </Modalize>
+
+            <AlertSnackBar config={alertSnackBarProp} />
         </>
     );
-
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 24,
-        justifyContent: 'space-between',
-    },
-
-    containerModal: {
-        padding: 24,
-        height: modalHeight,
-        borderTopLeftRadius: 10,
-        borderTopRightRadius: 10,
-        backgroundColor: Colors.bgDarkSecondary,
         justifyContent: 'space-between',
     },
 
@@ -246,10 +208,6 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         marginVertical: 24,
         marginHorizontal: 42
-    },
-
-    button: {
-        height: 60,
     },
 
     boxUpdateWeight: {

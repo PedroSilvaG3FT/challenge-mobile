@@ -1,13 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Image, ScrollView, StyleSheet } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import React, { useRef, useState } from 'react';
+import { StyleSheet } from 'react-native';
 import { IHandles } from 'react-native-modalize/lib/options';
 import Colors from '../../../constants/Colors';
-import { DayMenuInterface } from '../../../interfaces/memberMenu.interface';
-import { MenuUserService } from '../../../service/MenuUserService';
-import CameraComponent from '../../Camera';
-import { Text, View } from '../../Themed';
-import { Feather as Icon } from '@expo/vector-icons';
+import { View } from '../../Themed';
 import { useAuth } from '../../../contexts/auth';
 import { Form } from '@unform/mobile';
 import Input from '../../form/input';
@@ -71,7 +66,7 @@ const ModalUpdateWeight: React.FC<ModalUpdateWeightProps> = (props) => {
                             keyboardType="decimal-pad"
                         />
 
-                        <View style={{ alignItems: 'center', backgroundColor: 'transparent'}}>
+                        <View style={{ alignItems: 'center', backgroundColor: 'transparent' }}>
                             <GradientButton
                                 height={60}
                                 width={'100%'}
@@ -102,45 +97,6 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.bgDarkSecondary,
         justifyContent: 'space-between',
     },
-
-    title: {
-        fontSize: 26,
-        marginBottom: 12
-    },
-
-    mealBox: {
-        marginBottom: 16,
-        backgroundColor: Colors.bgDarkSecondary,
-        marginVertical: 4,
-        padding: 16,
-        borderRadius: 8,
-    },
-
-    labelImage: {
-        marginVertical: 12,
-        textAlign: 'center'
-    },
-
-    imageBox: {
-        maxHeight: 300,
-        borderRadius: 12,
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: Colors.colorDanger
-    },
-
-    image: {
-        width: "100%",
-        height: "100%",
-        resizeMode: "contain",
-    },
-
-    boxAddImage: {
-        alignItems: 'center',
-        paddingVertical: 12,
-        backgroundColor: 'transparent',
-    }
-
 })
 
 export default ModalUpdateWeight;
