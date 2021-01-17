@@ -22,50 +22,41 @@ const WaitingApproval: React.FC = () => {
 
     return (
         <ScrollView
-            contentContainerStyle={styles.container}
+            contentContainerStyle={styles.containerFull}
             refreshControl={
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }>
 
-            <View style={stylesMenuEmpty.container}>
-                <View style={stylesMenuEmpty.boxImage}>
+            <View style={styles.container}>
+                <View style={styles.boxImage}>
                     <Image
-                        style={stylesMenuEmpty.iconImage}
+                        style={styles.iconImage}
                         source={require("../../../assets/icons/customer-support.png")}
                     />
 
-                    <Text style={stylesMenuEmpty.boxImageLabel}>Aguardando Aprovação</Text>
+                    <Text style={styles.boxImageLabel}>Aguardando Aprovação</Text>
 
-                    <Text style={stylesMenuEmpty.boxImageText}>
+                    <Text style={styles.boxImageText}>
                         Estamos avaliando o seu perfil para indicar o melhor caminho para o seu 
                         <Text style={{color: Colors.colorDangerLight, fontWeight: 'bold'}}> Desafio 90 dias </Text> 
                         ! :)
                     </Text>
 
-                    <View style={stylesMenuEmpty.boxButton}>
-                        <TouchableOpacity style={stylesMenuEmpty.buttonBack} onPress={() => signOut()}>
+                    <View style={styles.boxButton}>
+                        <TouchableOpacity style={styles.buttonBack} onPress={() => signOut()}>
                             <Text style={styles.textDefault}> Voltar para Login </Text>
                         </TouchableOpacity>
                     </View>
 
                 </View>
             </View>
-
-            {/* <View>
-                <Text style={styles.textDefault}>Aguardando Aprovação</Text>
-                <TouchableOpacity onPress={() => signOut()}>
-                    <Text style={styles.textDefault}>
-                        Voltar para Login
-                </Text>
-                </TouchableOpacity>
-            </View> */}
         </ScrollView>
 
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
+    containerFull: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
@@ -75,9 +66,7 @@ const styles = StyleSheet.create({
     textDefault: {
         color: "#FFF"
     },
-})
 
-const stylesMenuEmpty = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
