@@ -44,25 +44,23 @@ const Menu: React.FC = () => {
         modalizeRef.current?.open();
     };
 
-    function onCloseModal() { 
+    function onCloseModal() {
         getMenuUser();
     }
 
     if (!menuMember.days) {
         return (
-            <>
-                <View style={stylesMenuEmpty.container}>
-                    <View style={stylesMenuEmpty.boxImage}>
-                        <Image
-                            style={stylesMenuEmpty.iconImage}
-                            source={require("../../../assets/icons/real-food.png")}
-                        />
+            <View style={stylesMenuEmpty.container}>
+                <View style={stylesMenuEmpty.boxImage}>
+                    <Image
+                        style={stylesMenuEmpty.iconImage}
+                        source={require("../../../assets/icons/real-food.png")}
+                    />
 
-                        <Text style={stylesMenuEmpty.boxImageText}>- Sem Cardapio atribuido -</Text>
-                        <Text style={stylesMenuEmpty.boxImageText}>Solicite ao administrador</Text>
-                    </View>
+                    <Text style={stylesMenuEmpty.boxImageText}>- Sem Cardapio atribuido -</Text>
+                    <Text style={stylesMenuEmpty.boxImageText}>Solicite ao administrador</Text>
                 </View>
-            </>
+            </View>
         )
     }
 

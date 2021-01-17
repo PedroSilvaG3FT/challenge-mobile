@@ -18,8 +18,17 @@ const Routes: React.FC = () => {
         )
     }
 
-    if (signed && !acceptTerm) { return <Terms /> }
-    if (signed && !approved) { return <WaitingApproval /> }
+    if (signed && !acceptTerm) {
+        return (
+            <Terms />
+        )
+    }
+    
+    if(signed && !approved) {
+        return (
+            <WaitingApproval />
+        )
+    }
 
     return signed ? <AppRoutes /> : <AuthRoutes />;
 }
