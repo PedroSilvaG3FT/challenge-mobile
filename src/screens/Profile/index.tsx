@@ -13,6 +13,7 @@ import { Modalize } from 'react-native-modalize';
 import { WeightUserService } from '../../service/WeightUserService';
 import GradientButton from '../../components/GradientButton';
 import AlertSnackBar, { ConfigAlertSnackBar } from '../../components/AlertSnackBar';
+import InputMask from '../../components/form/inputMask';
 
 const modalHeight = 500;
 
@@ -109,7 +110,8 @@ const Profile: React.FC = () => {
                     <View style={styles.inlineInput}>
                         <View style={GlobalStyle.formField}>
                             <Text style={GlobalStyle.label}>Telefone</Text>
-                            <Input name="phoneNumber" style={GlobalStyle.input} keyboardType="number-pad" />
+                            <InputMask type="cpf" name="phoneNumber" keyboardType="number-pad" />
+                            {/* <Input name="phoneNumber" style={GlobalStyle.input} keyboardType="number-pad" /> */}
                         </View>
 
                         <View style={GlobalStyle.formField}>

@@ -3,6 +3,7 @@ import { useField } from "@unform/core";
 import { StyleSheet, View, Text } from "react-native";
 import Colors from "../../constants/Colors";
 import { TextInput } from 'react-native-paper';
+import { TextInputMask } from "react-native-masked-text";
 // import Animated from "react-native-reanimated";
 
 interface InputProps {
@@ -13,23 +14,18 @@ interface InputProps {
   secureTextEntry?: boolean;
   editable?: boolean;
   style?: object;
-  lightMode?: boolean;
+  mask?: string;
   keyboardType?: "number-pad" | "decimal-pad" | "numeric" | "email-address" | "phone-pad";
   autoCapitalize?: "none" | "sentences" | "words" | "characters" | undefined;
 }
 
 const Input: React.FC<InputProps> = (props) => {
-  const [isFocus, setFocus] = useState(false);
-  const [hasValue, setHasValue] = useState(false);
   const inputRef = useRef<HTMLInputElement | any>(null);
   const { fieldName, registerField, defaultValue, error } = useField(props.name);
+  const inputProps = props;
 
   useEffect(() => {
-    if (inputRef?.current?.value) {
-      setHasValue(true);
-    } else {
-      // setHasValue(false);
-    }
+
 
   }, [inputRef?.current?.value]);
 
@@ -51,12 +47,16 @@ const Input: React.FC<InputProps> = (props) => {
     }
   }
 
-  function handleFocus(){
-    setFocus(true);
-  }
-
-  function handleBlur() {
-    setFocus(false);
+  const renderMaskInput = (props: any) => {
+    console.log(inputProps);
+    if(!inputProps.mask) return false;
+    return (
+      <TextInputMask
+        {...props}
+        type={"custom"}
+        options={{ mask: '' }}
+      />
+    )
   }
 
   return (
@@ -64,17 +64,15 @@ const Input: React.FC<InputProps> = (props) => {
       <TextInput
         ref={inputRef}
         style={[
-          styles.input, 
-          props.style, 
+          styles.input,
+          props.style,
         ]}
         mode="flat"
         underlineColor="#FFF"
         selectionColor={Colors.colorPrimary}
         label={props.placeholder}
         defaultValue={defaultValue}
-        onFocus={handleFocus}
         editable={props.editable}
-        onBlur={() => handleBlur()}
         secureTextEntry={props.secureTextEntry}
         onChangeText={(value) => setValue(value)}
         keyboardType={props.keyboardType}
@@ -84,11 +82,15 @@ const Input: React.FC<InputProps> = (props) => {
 
         theme={{
           colors: {
-            placeholder: '#FFF', 
-            text: '#FFF', 
+            placeholder: '#FFF',
+            text: '#FFF',
             primary: Colors.colorPrimary,
           },
         }}
+
+        // render={(props: any) => {
+        //   return renderMaskInput(props)
+        // }}
       />
     </View>
 
@@ -102,8 +104,5 @@ const styles = StyleSheet.create({
     maxHeight: 60,
     backgroundColor: 'transparent',
     fontSize: 16,
-
-    // flex: 1,
-    // justifyContent: 'flex-end'
   },
 });
