@@ -10,7 +10,7 @@ interface AuthContextData {
     signed: boolean;
     approved: boolean,
     acceptTerm: boolean,
-    user: object | null;
+    user: object | any;
     loading: boolean;
     signIn(login: LoginInterface): Promise<void>;
     signOut(): void;

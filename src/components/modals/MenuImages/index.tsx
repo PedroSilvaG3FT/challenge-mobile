@@ -22,7 +22,7 @@ const MenuImagesModal: React.FC<ModalImagesProps> = (props) => {
     const [showCamera, setShowCamera] = useState(false);
     const [day, setDay] = useState<DayMenuInterface>({} as DayMenuInterface);
     const [itemSelected, setItemSelected] = useState<number>(0);
-
+    const { user } = useAuth();
     const menuUserService = new MenuUserService();
 
     useEffect(() => {
@@ -59,6 +59,7 @@ const MenuImagesModal: React.FC<ModalImagesProps> = (props) => {
         if (!result) return;
 
         const newItemImage = {
+            userId: user?.id,
             menuItemId: itemSelected,
             image64: result
         };
@@ -84,7 +85,7 @@ const MenuImagesModal: React.FC<ModalImagesProps> = (props) => {
 
                                     <Image
                                         style={styles.image}
-                                        source={{ uri: `data:image/png;base64, ${meal.imageItem}` }}
+                                        source={{ uri: `${meal.imageItem}` }}
                                     />
                                 ) :
                                     <View style={styles.boxAddImage}>

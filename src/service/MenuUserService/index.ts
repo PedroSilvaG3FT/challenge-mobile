@@ -8,6 +8,6 @@ export class MenuUserService {
     }
 
     async update(userImage: any) {
-        return api.put(`${this.pathController}/menuItemImage`, userImage);
+        return api.post(`${this.pathController}/menuItemImage`, userImage);
     }
 }
