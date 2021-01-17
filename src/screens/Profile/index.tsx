@@ -52,8 +52,24 @@ const Profile: React.FC = () => {
     };
 
     const handleSubmit: SubmitHandler<any> = (data) => {
-        console.log("DATA :", data);
-        
+        data.id = user.id;
+
+        userService.update(data).then(
+            response => {
+                setAlertSnackBarProp({
+                    message: "Informações atualizadas com sucesso !",
+                    type: "success",
+                });
+            },
+            error => {
+                setAlertSnackBarProp({
+                    message: "Erro ao atualizar informações",
+                    type: "error",
+                });
+                console.log("ERROR :", error);
+            }
+        )
+
     };
 
     const handleSubmitNewWeight: SubmitHandler<any> = (data) => {
@@ -99,19 +115,33 @@ const Profile: React.FC = () => {
                             </Text>
                             <Text style={styles.defaltText}>{user.cpf}</Text>
                             <Text style={styles.defaltText}>{user.email}</Text>
-                            <Text style={[styles.defaltText, { color: Colors.colorDangerLight }]}>
-                                Dia para pagamento: {user.payday}
-                            </Text>
+                            {user.payday ?
+                                (
+                                    <Text style={[styles.defaltText, { color: Colors.colorDangerLight }]}>
+                                        Dia para pagamento: {user.payday}
+                                    </Text>
+                                ) :
+                                (
+                                    <RectButton style={styles.buttonPayDay}>
+                                        <Text style={styles.buttonPayDayText} allowFontScaling={false} onPress={() => onOpen()}>
+                                            Selecionar Forma de Pagamento
+                                        </Text>
+                                    </RectButton>
+                                )}
                         </View>
                     </View>
 
                     <View style={styles.separator}></View>
 
-                    <View style={styles.inlineInput}>
+                    <View >
                         <View style={GlobalStyle.formField}>
                             <Text style={GlobalStyle.label}>Telefone</Text>
-                            <InputMask type="cpf" name="phoneNumber" keyboardType="number-pad" />
-                            {/* <Input name="phoneNumber" style={GlobalStyle.input} keyboardType="number-pad" /> */}
+
+                            <Input
+                                name="phoneNumber"
+                                mask="(99)99999-9999"
+                                style={GlobalStyle.input}
+                                keyboardType="phone-pad" />
                         </View>
 
                         <View style={GlobalStyle.formField}>
@@ -191,6 +221,21 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
 
+    buttonPayDay: {
+        paddingVertical: 2,
+        paddingHorizontal: 12,
+        borderRadius: 25,
+        marginVertical: 12,
+        backgroundColor: Colors.colorDanger,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+
+    buttonPayDayText: {
+        color: '#FFF',
+        fontSize: 12
+    },
+
     defaltText: {
         color: '#FFF',
         marginVertical: 2
@@ -217,6 +262,7 @@ const styles = StyleSheet.create({
     boxUpdateWeight: {
         alignItems: 'center',
         justifyContent: 'center',
+        marginVertical: 18
     },
 
     buttonUpdateWeight: {
@@ -244,12 +290,6 @@ const styles = StyleSheet.create({
         textAlign: "center",
         color: "#FFF",
         fontSize: 20,
-    },
-
-    inlineInput: {
-        flexDirection: 'row',
-        alignItems: 'flex-start',
-        justifyContent: 'space-evenly'
     },
 });
 

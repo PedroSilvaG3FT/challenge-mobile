@@ -18,11 +18,11 @@ interface InputProps {
 }
 
 const InputMask: React.FC<InputProps> = (props) => {
+    const inputMaskProps = props;
     const inputRef = useRef<HTMLInputElement | any>(null);
     const inputMaskRef = useRef<HTMLInputElement | any>(null);
 
     const { fieldName, registerField, defaultValue, error } = useField(props.name);
-    const inputMaskProps = props;
 
     useEffect(() => {
         registerField({
@@ -41,7 +41,7 @@ const InputMask: React.FC<InputProps> = (props) => {
         if (inputRef.current) {
             const unmask = value.replace(/[^\w\s]/gi, '');
 
-            inputRef.current.value = props.getRawValue ? unmask : value;
+            inputRef.current.value = props.getRawValue ? unmask : value || "";
         }
     }
 

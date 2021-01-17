@@ -7,6 +7,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import Input from '../../components/form/input';
 import Colors from '../../constants/Colors';
 import AlertSnackBar, { ConfigAlertSnackBar } from '../../components/AlertSnackBar';
+import InputMask from '../../components/form/inputMask';
 
 const NameMemberRegister: React.FC = (props: any) => {
   const formRef = useRef<FormHandles>(null);
@@ -33,7 +34,7 @@ const NameMemberRegister: React.FC = (props: any) => {
       name: data.name.trim(),
       cpf: data.cpf.trim(),
       age: data.age,
-      phoneNumber: data.phoneNumber
+      phoneNumber: data.phoneNumber.trim()
     };
 
     navigation.navigate("DataMemberRegister", newParams);
@@ -53,9 +54,10 @@ const NameMemberRegister: React.FC = (props: any) => {
 
         <Form ref={formRef} onSubmit={handleConfirm} style={{ width: "100%" }}>
           <Input name="name" placeholder="Nome e Sobrenome" autoCapitalize="words" />
-          <Input name="cpf" placeholder="CPF" keyboardType="number-pad" />
+
+          <InputMask name="cpf" placeholder="CPF" mask="999.999.999-99" keyboardType="number-pad" />
           <Input name="age" placeholder="Idade" keyboardType="numeric" />
-          <Input name="phoneNumber" placeholder="Telefone" keyboardType="phone-pad" autoCapitalize="none" />
+          <InputMask name="phoneNumber" placeholder="Telefone" mask="(99)99999-9999" getRawValue keyboardType="phone-pad" />
 
           <TouchableOpacity
             style={styles.button}

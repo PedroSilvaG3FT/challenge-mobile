@@ -16,10 +16,8 @@ const Login: React.FC = () => {
   const navigation = useNavigation();
   const [alertSnackBarProp, setAlertSnackBarProp] = useState<ConfigAlertSnackBar>({} as ConfigAlertSnackBar);
 
-
   const handleLogin: SubmitHandler<any> = (data) => {
     if(!data.email || !data.password) {
-
       setAlertSnackBarProp({
         message: "Preencha todos os campos",
         type: "warn",
@@ -27,7 +25,9 @@ const Login: React.FC = () => {
       
       return;
     }
-    
+
+    data.email = data.email.trim();
+
     signIn(data);
   };
 
