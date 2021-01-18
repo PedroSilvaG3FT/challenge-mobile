@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "challenge-mobile",
+    "name": "Desafio 90 Dias",
     "slug": "challenge-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -10,7 +10,7 @@
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "black"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -26,7 +26,7 @@
       }
     },
     "android": {
-      "package": "com.emobile.emobile",
+      "package": "com.challenge90.mobile",
       "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
