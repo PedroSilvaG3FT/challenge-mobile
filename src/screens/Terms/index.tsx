@@ -71,7 +71,6 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.bgDarkPrimary
     },
 
-
     content: {
         marginBottom: 24
     },

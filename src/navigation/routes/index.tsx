@@ -6,9 +6,10 @@ import { useAuth } from '../../contexts/auth'
 import { ActivityIndicator, Modal } from 'react-native';
 import WaitingApproval from '../../screens/WaitingApproval';
 import Terms from '../../screens/Terms';
+import ModalPayment from '../../components/modals/Payment';
 
 const Routes: React.FC = () => {
-    const { signed, approved, loading, acceptTerm } = useAuth();
+    const { signed, approved, loading, acceptTerm, user } = useAuth();
 
     if (loading) {
         return (
@@ -27,6 +28,12 @@ const Routes: React.FC = () => {
     if(signed && !approved) {
         return (
             <WaitingApproval />
+        )
+    }
+
+    if (signed && !user.payday) {
+        return (
+            <ModalPayment />
         )
     }
 

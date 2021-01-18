@@ -22,12 +22,6 @@ interface InputProps {
 const Input: React.FC<InputProps> = (props) => {
   const inputRef = useRef<HTMLInputElement | any>(null);
   const { fieldName, registerField, defaultValue, error } = useField(props.name);
-  const inputProps = props;
-
-  useEffect(() => {
-
-
-  }, [inputRef?.current?.value]);
 
   useEffect(() => {
     registerField({
@@ -45,18 +39,6 @@ const Input: React.FC<InputProps> = (props) => {
     if (inputRef.current) {
       inputRef.current.value = value;
     }
-  }
-
-  const renderMaskInput = (props: any) => {
-    console.log(inputProps);
-    if(!inputProps.mask) return false;
-    return (
-      <TextInputMask
-        {...props}
-        type={"custom"}
-        options={{ mask: '' }}
-      />
-    )
   }
 
   return (
@@ -87,10 +69,6 @@ const Input: React.FC<InputProps> = (props) => {
             primary: Colors.colorPrimary,
           },
         }}
-
-        // render={(props: any) => {
-        //   return renderMaskInput(props)
-        // }}
       />
     </View>
 
