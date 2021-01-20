@@ -4,6 +4,7 @@ import { Dimensions, Image, StatusBar, StyleSheet } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Modalize } from 'react-native-modalize';
 import GradientButton from '../../components/GradientButton';
+import Loading from '../../components/Loading';
 import MenuImagesModal from '../../components/modals/MenuImages';
 import { Text, View } from '../../components/Themed';
 import Colors from '../../constants/Colors';
@@ -16,7 +17,7 @@ const Menu: React.FC = () => {
     const windowHeight = Dimensions.get("window").height;
     const menuUserService = new MenuUserService();
     const modalizeRef = useRef<Modalize>(null);
-
+    
     const modalConfigOptions = {
         modalizeRef: modalizeRef,
         onCloseModal: onCloseModal,
@@ -29,11 +30,14 @@ const Menu: React.FC = () => {
     }, [])
 
     async function getMenuUser() {
+        setLoading(true);
+
         let userStorage = await AsyncStorage.getItem("@EMAuth:user") as string;
         const storagedUser: MemberInterface = JSON.parse(userStorage);
         menuUserService.getById(storagedUser.id as number).then(
             response => {
                 setMenuMember(response.data);
+                setLoading(false);
             },
             error => {
                 console.error("Erro ao consutar Menu do usuário")
@@ -49,6 +53,9 @@ const Menu: React.FC = () => {
     function onCloseModal() {
         getMenuUser();
     }
+
+    const [loading, setLoading] = useState(false);
+    if (loading) return <Loading />
 
     if (!menuMember.days) {
         return (

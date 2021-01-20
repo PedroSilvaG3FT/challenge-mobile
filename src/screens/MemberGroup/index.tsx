@@ -5,6 +5,7 @@ import MemberInterface from "../../interfaces/member.interface";
 import { FlatList, RectButton } from "react-native-gesture-handler";
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { View, Text, StyleSheet, Image, Linking } from "react-native";
+import Loading from "../../components/Loading";
 
 const MemberGroup: React.FC = () => {
     const [members, setMembers] = useState<MemberInterface[]>([]);
@@ -16,11 +17,15 @@ const MemberGroup: React.FC = () => {
     }, [])
 
     function getMembers() {
+        setLoading(true);
+
         userService.getAll().then(
             response => {
-                setMembers(response.data)
+                setMembers(response.data);
+                setLoading(false);
             },
             error => {
+                setLoading(false);
                 console.error("Erro ak buscar membros");
             }
         )
@@ -53,6 +58,9 @@ const MemberGroup: React.FC = () => {
             </View>
         );
     };
+
+    const [loading, setLoading] = useState(false);
+    if (loading) return <Loading />
 
     return (
         <View style={styles.container}>

@@ -13,6 +13,7 @@ import { Modalize } from 'react-native-modalize';
 import GradientButton from '../../components/GradientButton';
 import AlertSnackBar, { ConfigAlertSnackBar } from '../../components/AlertSnackBar';
 import ModalUpdateWeight from '../../components/modals/UpdateWeight';
+import Loading from '../../components/Loading';
 
 const modalHeight = 500;
 
@@ -38,16 +39,21 @@ const Profile: React.FC = () => {
     }, [])
 
     async function getUserInfo() {
+        setLoading(true);
+
         let userStorage = await AsyncStorage.getItem("@EMAuth:user") as string;
         const storagedUser: MemberInterface = JSON.parse(userStorage);
 
         userService.getById(storagedUser.id as number).then(
             response => {
                 const userRes = response.data;
-                formRef.current?.setData(userRes);
+                setLoading(false);
+                
                 setUser(userRes);
+                formRef.current?.setData(userRes);
             },
             error => {
+                setLoading(false);
                 console.error("Erro ao buscar usuário")
             }
         );
@@ -58,6 +64,8 @@ const Profile: React.FC = () => {
     };
 
     const handleSubmit: SubmitHandler<any> = (data) => {
+        setLoading(true);
+
         data.id = user.id;
 
         userService.update(data).then(
@@ -66,16 +74,23 @@ const Profile: React.FC = () => {
                     message: "Informações atualizadas com sucesso !",
                     type: "success",
                 });
+
+                setLoading(false);
             },
             error => {
                 setAlertSnackBarProp({
                     message: "Erro ao atualizar informações",
                     type: "error",
                 });
+
+                setLoading(false);
             }
         )
 
     };
+
+    const [loading, setLoading] = useState(false);
+    if (loading) return <Loading />
 
     return (
         <>

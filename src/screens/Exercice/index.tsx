@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import React, { useEffect, useState } from 'react';
 import { Image, StatusBar, StyleSheet } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
+import Loading from '../../components/Loading';
 import { Text, View } from '../../components/Themed';
 import Colors from '../../constants/Colors';
 import { DayExerciseMemberInterface } from '../../interfaces/exercise.interface';
@@ -17,17 +18,26 @@ const Exercice: React.FC = () => {
     }, [])
 
     async function getExerciceUser() {
+        setLoading(true);
+
         let userStorage = await AsyncStorage.getItem("@EMAuth:user") as string;
         const storagedUser: MemberInterface = JSON.parse(userStorage);
 
         exerciceUserService.getById(storagedUser.id as number).then(
             response => {
-                setExerciseMember(response.data)
+                setExerciseMember(response.data);
+                setLoading(false);
             },
-            error => console.error("Erro ao buscar exercicios do usuário")
+            error => {
+                setLoading(false);
+                console.error("Erro ao buscar exercicios do usuário");
+            }
         )
     }
 
+    const [loading, setLoading] = useState(false);
+    if (loading) return <Loading />
+    
     if (!exerciseMember.length) {
         return (
             <View style={stylesMenuEmpty.container}>
