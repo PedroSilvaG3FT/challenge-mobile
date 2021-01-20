@@ -21,7 +21,7 @@ const MemberGroup: React.FC = () => {
                 setMembers(response.data)
             },
             error => {
-                console.log("ERROR :", error);
+                console.error("Erro ak buscar membros");
             }
         )
     }

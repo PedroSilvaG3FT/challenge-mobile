@@ -39,7 +39,7 @@ const ModalPayment: React.FC<PropsModalPaymentInterface> = (props) => {
                 setPaymentList(response.data);
             },
             error => {
-                console.log("ERRO :", error)
+                console.error("Erro ao buscar pagamentos")
             }
         )
     }
@@ -63,11 +63,11 @@ const ModalPayment: React.FC<PropsModalPaymentInterface> = (props) => {
                 
                 paymentUserService.create(newPaymentUser).then(
                     () => getUser(),
-                    error => console.log('error', error)
+                    error => console.error('Erro ao criar pagamentos')
                 )
             },
             error => {
-                console.log("ERROR :", error);
+                console.error("Erro ao atualizar usuario");
             }
         )
     };

@@ -42,9 +42,7 @@ const MenuImagesModal: React.FC<ModalImagesProps> = (props) => {
                 setItemSelected(0);
                 closeModal();
             },
-            error => {
-                console.log("Deu ruim");
-            }
+            error => { console.error("Erro ao salvar imagem")}
         )
     }
 

@@ -25,7 +25,7 @@ const Terms: React.FC = () => {
                 getUser();
             },
             error => {
-                console.log("ERROR :", error);
+                console.error("Erro ao aceitar termos");
             }
         )
     };

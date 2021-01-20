@@ -47,7 +47,9 @@ const Profile: React.FC = () => {
                 formRef.current?.setData(userRes);
                 setUser(userRes);
             },
-            error => console.log("ERROR :", error)
+            error => {
+                console.error("Erro ao buscar usuário")
+            }
         );
     }
 
@@ -70,7 +72,6 @@ const Profile: React.FC = () => {
                     message: "Erro ao atualizar informações",
                     type: "error",
                 });
-                console.log("ERROR :", error);
             }
         )
 

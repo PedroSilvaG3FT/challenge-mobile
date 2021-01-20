@@ -71,7 +71,7 @@ export const AuthProvider: React.FC = ({ children }) => {
                 AsyncStorage.setItem("@EMAuth:user", JSON.stringify(response.data));
             },
             error => {
-                console.log("ERROR ");
+                console.error("Erro ao buscar usuário");
             }
         )
     }

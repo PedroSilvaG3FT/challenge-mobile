@@ -35,7 +35,9 @@ const Menu: React.FC = () => {
             response => {
                 setMenuMember(response.data);
             },
-            error => console.log("ERROR :", error)
+            error => {
+                console.error("Erro ao consutar Menu do usuário")
+            }
         )
     }
 

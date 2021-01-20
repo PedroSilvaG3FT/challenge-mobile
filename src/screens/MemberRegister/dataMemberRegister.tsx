@@ -39,8 +39,6 @@ const DataMemberRegister: React.FC = (props: any) => {
             height: data.height,
         } as MemberInterface;
 
-        console.log(userDTO);
-
         const response = await userService.create(userDTO);
 
         const duration = 4000;

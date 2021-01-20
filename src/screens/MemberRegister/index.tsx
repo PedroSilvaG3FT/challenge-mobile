@@ -18,7 +18,6 @@ const EmailMemberRegister: React.FC = () => {
 
     const handleConfirm: SubmitHandler<any> = (form) => {
         const email = form.email ? form.email?.trim() : null;
-        console.log(email)
 
         if (!email) {
             setAlertSnackBarProp({
@@ -39,7 +38,12 @@ const EmailMemberRegister: React.FC = () => {
                     });
                 }
             },
-            error => console.log("ERROR :", error)
+            error => { 
+                setAlertSnackBarProp({
+                    message: "Ocorreu um erro ao consultar por email",
+                    type: "error",
+                });
+            }
         )
     };
 

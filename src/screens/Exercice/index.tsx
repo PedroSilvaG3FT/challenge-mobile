@@ -24,11 +24,9 @@ const Exercice: React.FC = () => {
             response => {
                 setExerciseMember(response.data)
             },
-            error => console.log("ERROR :", error)
+            error => console.error("Erro ao buscar exercicios do usuário")
         )
     }
-
-    console.log(exerciseMember)
 
     if (!exerciseMember.length) {
         return (

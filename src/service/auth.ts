@@ -22,6 +22,5 @@ interface ResponseToken {
 }
 
 export function singIn(userLogin: any): Promise<ResponseToken> {
-    // console.log("userLogin :", userLogin);
     return api.post('autentication', userLogin);
 }
