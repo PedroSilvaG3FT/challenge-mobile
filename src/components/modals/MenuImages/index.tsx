@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Image, ScrollView, StyleSheet } from 'react-native';
+import { Image, Modal, ScrollView, StyleSheet } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { IHandles } from 'react-native-modalize/lib/options';
 import Colors from '../../../constants/Colors';
@@ -9,6 +9,8 @@ import CameraComponent from '../../Camera';
 import { Text, View } from '../../Themed';
 import { Feather as Icon } from '@expo/vector-icons';
 import { useAuth } from '../../../contexts/auth';
+import { ActivityIndicator } from 'react-native-paper';
+import Loading from '../../Loading';
 
 interface ModalImagesProps {
     modalRef?: React.RefObject<IHandles>,
@@ -18,11 +20,14 @@ interface ModalImagesProps {
 };
 
 const MenuImagesModal: React.FC<ModalImagesProps> = (props) => {
+    const { user } = useAuth();
     const { modalConfigOptions } = props;
     const [showCamera, setShowCamera] = useState(false);
-    const [day, setDay] = useState<DayMenuInterface>({} as DayMenuInterface);
     const [itemSelected, setItemSelected] = useState<number>(0);
-    const { user } = useAuth();
+    const [day, setDay] = useState<DayMenuInterface>({} as DayMenuInterface);
+    
+    const [loading, setLoading] = useState(true);
+
     const menuUserService = new MenuUserService();
 
     useEffect(() => {
@@ -37,9 +42,12 @@ const MenuImagesModal: React.FC<ModalImagesProps> = (props) => {
     }
 
     function saveImageItem(itemImage: any) {
+        setLoading(true);
+        
         menuUserService.update(itemImage).then(
             response => {
                 setItemSelected(0);
+                setLoading(false);
                 closeModal();
             },
             error => { console.error("Erro ao salvar imagem")}
@@ -65,6 +73,9 @@ const MenuImagesModal: React.FC<ModalImagesProps> = (props) => {
         saveImageItem(newItemImage);
     };
 
+
+    if (loading) return <Loading />
+    
     return (
         <>
             <View style={{ ...styles.container, height: modalConfigOptions.height || "auto" }}>

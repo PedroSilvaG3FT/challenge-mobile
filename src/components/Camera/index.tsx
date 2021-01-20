@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { StyleSheet, View, Text, Modal, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, Modal, TouchableOpacity } from 'react-native';
 import { Camera } from 'expo-camera';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import PreviewImage from './previewImage';
@@ -41,11 +41,6 @@ const CameraComponent: React.FC<CameraProps> = (props) => {
         );
     }
 
-    function resultModal() {
-        setModalPreview(false);
-        return capturedImage.base64;
-    }
-
     async function takePicture() {
         if (!cameraRef) return;
 
@@ -54,37 +49,14 @@ const CameraComponent: React.FC<CameraProps> = (props) => {
         setModalPreview(true)
     }
 
-    function dataURItoBlob(dataURI: string) {
-        var byteString;
-        if (dataURI.split(',')[0].indexOf('base64') >= 0)
-            byteString = atob(dataURI.split(',')[1]);
-        else
-            byteString = unescape(dataURI.split(',')[1]);
-
-        var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-
-        var ia = new Uint8Array(byteString.length);
-        for (var i = 0; i < byteString.length; i++) {
-            ia[i] = byteString.charCodeAt(i);
-        }
-
-        const response = new Blob([ia], { type: mimeString }); 
-
-        // const file = RNFetchBlob.wrap(Platform.OS === 'ios' ? dataURI.replace('file://', '') : dataURI);
-
-        return response;
-    }
-
     const resultPreview = (resultPreview: any) => {
         const { acceptImage } = resultPreview;
+        
+        setModalPreview(false);
 
-        if (!acceptImage) {
-            setModalPreview(false);
-            return;
-        }
+        if (!acceptImage) return;
 
-        const result = resultModal();
-        props.onClose(result);
+        props.onClose(capturedImage.base64);
     };
 
     return (
