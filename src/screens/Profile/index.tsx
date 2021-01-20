@@ -83,9 +83,7 @@ const Profile: React.FC = () => {
                     <View style={styles.boxUserInfo}>
                         <Image
                             style={styles.avatarImage}
-                            source={{
-                                uri: 'https://pickaface.net/gallery/avatar/unr_guihteste_180521_0137_2av4wpi.png',
-                            }}
+                            source={user.image ? { uri: user.image } : require("../../../assets/icons/user.png")}
                         />
 
                         <View>

@@ -58,7 +58,7 @@ const Member: React.FC = () => {
     async function getUserInfo() {
         let userStorage = await AsyncStorage.getItem("@EMAuth:user") as string;
         const storagedUser: MemberInterface = JSON.parse(userStorage);
-        
+
         userService.getById(storagedUser.id as number).then(
             response => {
                 const res = response.data;
@@ -103,13 +103,18 @@ const Member: React.FC = () => {
                         <View style={{ ...styles.centerAlignItems, flex: 1 }}>
                             <Image
                                 style={styles.avatarImage}
+                                source={user.image ? { uri: user.image } : require("../../../assets/icons/user.png")}
+                            />
+
+                            {/* <Image
+                                style={styles.avatarImage}
                                 source={{
                                     uri: 'https://pickaface.net/gallery/avatar/unr_guihteste_180521_0137_2av4wpi.png',
                                 }}
-                            />
+                            /> */}
 
                             <Text style={styles.userInfoLabel}>Olá {user?.name?.split(" ")[0]}, o seu peso atual é</Text>
-                            
+
                             <TouchableOpacity onPress={() => onOpen()}>
                                 <Text style={styles.currentWeightText}>
                                     {user.currentWeight ? `${user.currentWeight}Kg` : `${user.startingWeight}Kg`}
