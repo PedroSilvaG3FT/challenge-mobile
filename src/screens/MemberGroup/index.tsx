@@ -113,7 +113,6 @@ const styles = StyleSheet.create({
 
     button: {
         height: 60,
-        borderRadius: 10,
         overflow: "hidden",
         alignItems: "center",
         flexDirection: "row",
