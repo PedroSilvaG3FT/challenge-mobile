@@ -1,17 +1,19 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Image } from "react-native";
-import { FlatList } from "react-native-gesture-handler";
 import Colors from "../../constants/Colors";
+import React, { useEffect, useState } from "react";
 import { UserService } from "../../service/UserService";
 import MemberInterface from "../../interfaces/member.interface";
+import { FlatList, RectButton } from "react-native-gesture-handler";
+import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
+import { View, Text, StyleSheet, Image, Linking } from "react-native";
 
 const MemberGroup: React.FC = () => {
     const [members, setMembers] = useState<MemberInterface[]>([]);
     const userService = new UserService();
+    const linkGroupWpp = "https://chat.whatsapp.com/DUKo8O4FOQA1rdc9PJVHTd";
 
     useEffect(() => {
         getMembers();
-    },[])
+    }, [])
 
     function getMembers() {
         userService.getAll().then(
@@ -32,7 +34,7 @@ const MemberGroup: React.FC = () => {
             <View style={[styles.item, !isLastItem ? styles.itemSeparator : {}]}>
                 <Image
                     style={styles.avatarImage}
-                    source={member.image ? {uri: member.image} : require("../../../assets/icons/user.png")}
+                    source={member.image ? { uri: member.image } : require("../../../assets/icons/user.png")}
                 />
 
                 <View>
@@ -54,6 +56,17 @@ const MemberGroup: React.FC = () => {
 
     return (
         <View style={styles.container}>
+            <RectButton
+                style={styles.button}
+                onPress={() => Linking.openURL(linkGroupWpp)}
+            >
+                <Text style={styles.buttonText}>
+                    Participe do nosso grupo no WhatsApp {"  "}
+                </Text>
+
+                <Icon name="whatsapp" size={28} color={Colors.textLight} />
+            </RectButton>
+
             <FlatList
                 data={members}
                 renderItem={renderItem}
@@ -74,11 +87,10 @@ const styles = StyleSheet.create({
         marginHorizontal: 16,
         flexDirection: "row",
         alignItems: "center",
-        // justifyContent: "space-between",
     },
 
     avatarImage: {
-        width:  50,
+        width: 50,
         height: 50,
         marginRight: 24,
         borderRadius: 50,
@@ -90,7 +102,7 @@ const styles = StyleSheet.create({
 
     itemSeparator: {
         borderBottomWidth: 1,
-        borderBottomColor: Colors.colorPrimary,
+        borderBottomColor: Colors.colorSuccess,
     },
 
     title: {
@@ -99,9 +111,23 @@ const styles = StyleSheet.create({
         color: Colors.colorPrimary,
     },
 
-    musicText: {
-        width: 200,
+    button: {
+        height: 60,
+        borderRadius: 10,
+        overflow: "hidden",
+        alignItems: "center",
+        flexDirection: "row",
+        paddingHorizontal: 28,
+        backgroundColor: Colors.colorSuccess,
     },
+
+    buttonText: {
+        flex: 1,
+        justifyContent: "center",
+        textAlign: "center",
+        color: Colors.textLight,
+        fontSize: 20,
+    }
 });
 
 export default MemberGroup;

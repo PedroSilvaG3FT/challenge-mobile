@@ -110,7 +110,7 @@ function TabMemberGroupNavigator() {
       <TabMemberGroupStack.Screen
         name="TabMemberGroupScreen"
         component={MemberGroup}
-        options={{ headerTitle: 'Tab Two Title' }}
+        options={{ headerTitle: 'Membros' }}
       />
     </TabMemberGroupStack.Navigator>
   );
@@ -137,6 +137,7 @@ function TabSettingsNavigator() {
       <TabSettingsStack.Screen
         name="TabSettingsScreen"
         component={Settings}
+        options={{ headerShown: false}}
       />
     </TabSettingsStack.Navigator>
   )
