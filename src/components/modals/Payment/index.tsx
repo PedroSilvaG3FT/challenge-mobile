@@ -6,6 +6,7 @@ import { UserService } from "../../../service/UserService";
 import { RadioButton } from 'react-native-paper';
 import { PaymentService } from "../../../service/PaymentService";
 import { PaymentInterface } from "../../../interfaces/payment.interface";
+import { PaymentUserService } from "../../../service/PaymentUserService";
 
 interface PropsModalPaymentInterface {
     isUpdate?: boolean,
@@ -24,6 +25,7 @@ const ModalPayment: React.FC<PropsModalPaymentInterface> = (props) => {
 
     const userService = new UserService();
     const paymentService = new PaymentService();
+    const paymentUserService = new PaymentUserService();
 
     useEffect(() => {
         setVisible(true);
@@ -52,7 +54,17 @@ const ModalPayment: React.FC<PropsModalPaymentInterface> = (props) => {
         userService.update(updatePaymentDTO).then(
             response => {
                 setVisible(false);
-                getUser();
+
+                const newPaymentUser = {
+                    userId: updatePaymentDTO.id,
+                    payday: updatePaymentDTO.payday,
+                    paymentId: updatePaymentDTO.paymentId
+                }
+                
+                paymentUserService.create(newPaymentUser).then(
+                    () => getUser(),
+                    error => console.log('error', error)
+                )
             },
             error => {
                 console.log("ERROR :", error);

@@ -62,6 +62,7 @@ const Member: React.FC = () => {
         userService.getById(storagedUser.id as number).then(
             response => {
                 const res = response.data;
+                console.log(res);
                 setUser(res);
 
                 const goalWeek = res.goalWeek ? (res.currentWeight - res.goalWeek) : 0;
