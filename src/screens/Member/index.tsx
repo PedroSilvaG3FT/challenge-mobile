@@ -142,12 +142,12 @@ const Member: React.FC = () => {
                         onPress={() => navigation.navigate('ExerciceScreen')}
                     />
 
-                    <GradientButton
+                    {/* <GradientButton
                         title="Meu Historico"
                         nameIcon="history"
                         width={"auto"}
                         height={60}
-                    />
+                    /> */}
 
                     <GradientButton
                         title="Meu Perfil"

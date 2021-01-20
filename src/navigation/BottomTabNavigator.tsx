@@ -42,14 +42,14 @@ export default function BottomTabNavigator() {
           tabBarIcon: ({ color }) => <Icon name="users" size={sizeIconDefault} color={color} />,
         }}
       />
-      <BottomTab.Screen
+      {/* <BottomTab.Screen
         name="TabTipsNews"
         component={TabTipsNewsNavigator}
         options={{
           tabBarLabel: "Dicas/Noticias",
           tabBarIcon: ({ color }) => <Icon name="book-open" size={sizeIconDefault} color={color} />,
         }}
-      />
+      /> */}
       <BottomTab.Screen
         name="TabSettings"
         component={TabSettingsNavigator}
@@ -116,18 +116,18 @@ function TabMemberGroupNavigator() {
   );
 }
 
-const TabTipsNewsStack = createStackNavigator<TabTipsNewsParamList>();
+// const TabTipsNewsStack = createStackNavigator<TabTipsNewsParamList>();
 
-function TabTipsNewsNavigator() {
-  return (
-    <TabTipsNewsStack.Navigator>
-      <TabTipsNewsStack.Screen
-        name="TabTipsNewsScreen"
-        component={TipsNews}
-      />
-    </TabTipsNewsStack.Navigator>
-  )
-}
+// function TabTipsNewsNavigator() {
+//   return (
+//     <TabTipsNewsStack.Navigator>
+//       <TabTipsNewsStack.Screen
+//         name="TabTipsNewsScreen"
+//         component={TipsNews}
+//       />
+//     </TabTipsNewsStack.Navigator>
+//   )
+// }
 
 const TabSettingsStack = createStackNavigator<TabSettingsParamList>();
 
