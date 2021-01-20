@@ -26,13 +26,6 @@ const ModalPayment: React.FC<PropsModalPaymentInterface> = (props) => {
     const paymentService = new PaymentService();
 
     useEffect(() => {
-        if(!props.visible) return;
-
-        setVisible(true);
-        getAllPayment();
-    }, [props.visible])
-
-    useEffect(() => {
         setVisible(true);
 
         getAllPayment();
@@ -59,7 +52,6 @@ const ModalPayment: React.FC<PropsModalPaymentInterface> = (props) => {
         userService.update(updatePaymentDTO).then(
             response => {
                 setVisible(false);
-                props.onClose();
                 getUser();
             },
             error => {

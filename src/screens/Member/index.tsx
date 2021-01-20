@@ -58,6 +58,7 @@ const Member: React.FC = () => {
     async function getUserInfo() {
         let userStorage = await AsyncStorage.getItem("@EMAuth:user") as string;
         const storagedUser: MemberInterface = JSON.parse(userStorage);
+        
         userService.getById(storagedUser.id as number).then(
             response => {
                 const res = response.data;
@@ -66,8 +67,8 @@ const Member: React.FC = () => {
                 const goalWeek = res.goalWeek ? (res.currentWeight - res.goalWeek) : 0;
                 const goalWeight = res.goalWeight ? (res.currentWeight - res.goalWeight) : 0;
 
-                setRemainingGoalWeek(goalWeek);
-                setRemainingGoalWeight(goalWeight);
+                setRemainingGoalWeek(goalWeek < 0 ? 0 : goalWeek);
+                setRemainingGoalWeight(goalWeight < 0 ? 0 : goalWeight);
 
                 const _initalDay = new Date(res.dateCreation);
                 const _currentDay = new Date();

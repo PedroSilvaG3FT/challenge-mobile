@@ -75,14 +75,33 @@ const MenuImagesModal: React.FC<ModalImagesProps> = (props) => {
 
                     {day?.meals?.map((meal, index) => (
                         <View style={styles.mealBox} key={index}>
-                            <Text style={styles.labelImage}>{meal.typeMealName}</Text>
+
+                            <View style={styles.boxLabelImage}>
+                                <Text style={styles.labelImage}>
+                                    {meal.typeMealName}
+                                    {"  "}
+                                    {meal.rating ? (
+                                        <Text style={{
+                                            ...styles.labelImageRating,
+                                            color: meal.rating == 1 ? Colors.colorDanger : (meal.rating == 2 ? Colors.colorDangerLight : Colors.colorSuccess)
+                                        }}>
+                                            {meal.rating == 1 ? "Reprovado" : (meal.rating == 2 ? "Ok" : "Exelente")}{"  "}
+                                            <Icon
+                                                size={24}
+                                                name={meal.rating == 1 ? "frown" : (meal.rating == 2 ? "smile" : "smile")}
+                                                color={meal.rating == 1 ? Colors.colorDanger : (meal.rating == 2 ? Colors.colorDangerLight : Colors.colorSuccess)}
+                                            />
+                                        </Text>
+                                    ) : null}
+                                </Text>
+
+                            </View>
 
                             <TouchableOpacity
                                 style={[styles.imageBox, meal.imageItem ? { backgroundColor: 'transparent' } : {}]}
                                 onPress={() => openCamera(meal)}
                             >
                                 {meal.imageItem ? (
-
                                     <Image
                                         style={styles.image}
                                         source={{ uri: `${meal.imageItem}` }}
@@ -127,9 +146,18 @@ const styles = StyleSheet.create({
         borderRadius: 8,
     },
 
-    labelImage: {
+    boxLabelImage: {
         marginVertical: 12,
-        textAlign: 'center'
+        backgroundColor: 'transparent',
+    },
+
+    labelImage: {
+        justifyContent: 'center',
+        textAlign: 'center',
+    },
+
+    labelImageRating: {
+        paddingVertical: 30,
     },
 
     imageBox: {

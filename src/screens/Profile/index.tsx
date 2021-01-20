@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { FormHandles, SubmitHandler } from '@unform/core';
 import { RectButton } from 'react-native-gesture-handler';
-import { View, Text, StyleSheet, Image, Button, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, Image, Dimensions } from 'react-native';
 import { Form } from '@unform/mobile';
 import Input from '../../components/form/input';
 import Colors from '../../constants/Colors';
@@ -13,14 +13,12 @@ import { Modalize } from 'react-native-modalize';
 import GradientButton from '../../components/GradientButton';
 import AlertSnackBar, { ConfigAlertSnackBar } from '../../components/AlertSnackBar';
 import ModalUpdateWeight from '../../components/modals/UpdateWeight';
-import ModalPayment from '../../components/modals/Payment';
 
 const modalHeight = 500;
 
 const Profile: React.FC = () => {
     const formRef = useRef<FormHandles>(null);
     const modalizeRef = useRef<Modalize>(null);
-    const [modalPaymentVisible, setModalPaymentVisible] = useState(false);
     
     const userService = new UserService();
     const windowHeight = Dimensions.get("window").height;
@@ -55,14 +53,6 @@ const Profile: React.FC = () => {
 
     const onOpen = () => {
         modalizeRef.current?.open();
-    };
-
-    function openModalPayment() {
-        setModalPaymentVisible(true)
-    }
-
-    const onCloseModalPayment = () => {
-        setModalPaymentVisible(false)
     };
 
     const handleSubmit: SubmitHandler<any> = (data) => {
@@ -107,12 +97,9 @@ const Profile: React.FC = () => {
                             <Text style={styles.defaltText}>{user.email}</Text>
                             {user.payday ?
                                 (
-                                    // <Text style={[styles.defaltText, { color: Colors.colorDangerLight }]}>
-                                    //     Dia para pagamento: {user.payday}
-                                    // </Text>
                                     <RectButton style={{...styles.buttonPayDay, backgroundColor: Colors.colorSuccess}}>
-                                        <Text style={styles.buttonPayDayText} allowFontScaling={false} onPress={() => openModalPayment()}>
-                                            Visualizar Pagamento
+                                        <Text style={styles.buttonPayDayText} allowFontScaling={false}>
+                                            Dia para pagamento: {user.payday}
                                         </Text>
                                     </RectButton>
                                 ) :
@@ -145,7 +132,7 @@ const Profile: React.FC = () => {
                         </View>
 
                         <View style={styles.boxUpdateWeight}>
-                            <Text style={styles.labelBoxUpdateWeight}>Atualizar Peso Atual</Text>
+                            <Text style={styles.labelBoxUpdateWeight}>Atualizar Peso</Text>
 
                             <RectButton style={styles.buttonUpdateWeight} onPress={() => onOpen()}>
                                 <Text style={styles.buttonUpdateWeightText} allowFontScaling={false}>
@@ -174,7 +161,6 @@ const Profile: React.FC = () => {
             </Modalize>
 
             <AlertSnackBar config={alertSnackBarProp} />
-            <ModalPayment visible={modalPaymentVisible} isUpdate onClose={onCloseModalPayment}/>
         </>
     );
 }
