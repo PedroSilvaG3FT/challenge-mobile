@@ -26,8 +26,7 @@ const MenuImagesModal: React.FC<ModalImagesProps> = (props) => {
     const [itemSelected, setItemSelected] = useState<number>(0);
     const [day, setDay] = useState<DayMenuInterface>({} as DayMenuInterface);
     
-    const [loading, setLoading] = useState(true);
-
+    const [loading, setLoading] = useState(false);
     const menuUserService = new MenuUserService();
 
     useEffect(() => {
@@ -50,7 +49,10 @@ const MenuImagesModal: React.FC<ModalImagesProps> = (props) => {
                 setLoading(false);
                 closeModal();
             },
-            error => { console.error("Erro ao salvar imagem")}
+            error => {
+                setLoading(false); 
+                console.error("Erro ao salvar imagem")
+            }
         )
     }
 
