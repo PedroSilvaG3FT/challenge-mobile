@@ -29,6 +29,7 @@ const EmailMemberRegister: React.FC = () => {
 
         userService.getByEmail(form.email).then(
             response => {
+                console.log(response.data)
                 if (!response.data) {
                     navigation.navigate("PasswordMemberRegister", { email });
                 } else {
