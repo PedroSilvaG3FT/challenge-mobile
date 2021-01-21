@@ -55,8 +55,8 @@ const Profile: React.FC = () => {
                 validatePayment();
                 const userRes = response.data;
                 setLoading(false);
-
                 setMember(userRes);
+                setShowModalAvatar(false);
                 formRef.current?.setData(userRes);
             },
             error => {
@@ -95,7 +95,7 @@ const Profile: React.FC = () => {
 
         setLabelPayment({
             status: 1,
-            text: `Próximo Pagamento: Dia ${member?.payday}`
+            text: `Próximo Pagamento: Dia ${member?.payday || 10}`
         })
     };
 
