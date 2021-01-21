@@ -18,11 +18,13 @@ import { PaymentUserService } from '../../service/PaymentUserService';
 import { useAuth } from '../../contexts/auth';
 import { isFuture, isPast } from 'date-fns';
 import AvatarSelection from '../../components/modals/AvatarSelection';
+import { useNavigation } from '@react-navigation/native';
 
 const modalHeight = 500;
 
 const Profile: React.FC = () => {
     const { user } = useAuth();
+    const navigation = useNavigation();
     const formRef = useRef<FormHandles>(null);
     const modalizeRef = useRef<Modalize>(null);
 
@@ -36,13 +38,6 @@ const Profile: React.FC = () => {
     const [showModalAvatar, setShowModalAvatar] = useState(false);
 
     const modalConfigOptions = {
-        modalizeRef: modalizeRef,
-        onCloseModal: getUserInfo,
-        height: (windowHeight - 130),
-        data: {}
-    };
-
-    const modalAvatarConfigOptions = {
         modalizeRef: modalizeRef,
         onCloseModal: getUserInfo,
         height: (windowHeight - 130),
@@ -76,7 +71,7 @@ const Profile: React.FC = () => {
         const userPayment = responseUserPayment.data;
 
         const statusPayment = userPayment.map((item: any, index: number) => {
-            let newDueDate = new Date(item.dueDate);
+            const newDueDate = new Date(item.dueDate);
 
             if (!item.active) {
                 item.status = 0; //PAGO
@@ -122,6 +117,7 @@ const Profile: React.FC = () => {
                 });
 
                 setLoading(false);
+                navigation.navigate("MemberScreen");
             },
             error => {
                 setAlertSnackBarProp({
@@ -130,6 +126,8 @@ const Profile: React.FC = () => {
                 });
 
                 setLoading(false);
+                setMember(member);
+
             }
         )
 
@@ -145,7 +143,10 @@ const Profile: React.FC = () => {
                     <View style={styles.boxUserInfo}>
                         <TouchableOpacity onPress={() => onOpen(true)}>
                             <Image
-                                style={styles.avatarImage}
+                                style={{
+                                    ...styles.avatarImage,
+                                    borderColor: (labelPayment.status === 1) ? Colors.colorSuccess : Colors.colorDanger
+                                }}
                                 source={member.image ? { uri: member.image } : require("../../../assets/icons/user.png")}
                             />
                         </TouchableOpacity>
@@ -159,7 +160,10 @@ const Profile: React.FC = () => {
                             <Text style={styles.defaltText}>{member.email}</Text>
                             {member.payday ?
                                 (
-                                    <RectButton style={{ ...styles.buttonPayDay, backgroundColor: (labelPayment.status === 1) ? Colors.colorSuccess : Colors.colorDanger }}>
+                                    <RectButton style={{
+                                        ...styles.buttonPayDay,
+                                        backgroundColor: (labelPayment.status === 1) ? Colors.colorSuccess : Colors.colorDanger
+                                    }}>
                                         <Text style={styles.buttonPayDayText} allowFontScaling={false}>
                                             {labelPayment.text}
                                         </Text>
@@ -268,8 +272,8 @@ const styles = StyleSheet.create({
         marginRight: 24,
         borderRadius: 50,
 
-        borderWidth: 2,
-        borderColor: Colors.colorPrimary
+        borderWidth: 8,
+        borderColor: Colors.textLight
     },
 
     separator: {
