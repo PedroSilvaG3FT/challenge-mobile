@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Text, View, StyleSheet } from "react-native";
 import { RectButton } from "react-native-gesture-handler";
 import { useAuth } from "../../contexts/auth";
@@ -9,6 +9,7 @@ import { Form } from "@unform/mobile";
 import { FormHandles, SubmitHandler } from "@unform/core";
 import Input from "../../components/form/input";
 import AlertSnackBar, { ConfigAlertSnackBar } from "../../components/AlertSnackBar";
+import Loading from "../../components/Loading";
 
 const Login: React.FC = () => {
   const { signIn } = useAuth();
@@ -31,11 +32,12 @@ const Login: React.FC = () => {
     signIn(data);
   };
 
+
   return (
     <>
       <View style={styles.container}>
         <Form ref={formRef} onSubmit={handleLogin} style={{ width: "100%" }}>
-          <Input name="email" placeholder="Usuário" autoCapitalize="none" />
+          <Input name="email" placeholder="Email" autoCapitalize="none" />
           <Input name="password" placeholder="Senha" secureTextEntry={true} autoCapitalize="none" />
 
           <RectButton
