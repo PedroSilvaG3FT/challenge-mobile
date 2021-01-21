@@ -14,18 +14,24 @@ import GradientButton from '../../components/GradientButton';
 import AlertSnackBar, { ConfigAlertSnackBar } from '../../components/AlertSnackBar';
 import ModalUpdateWeight from '../../components/modals/UpdateWeight';
 import Loading from '../../components/Loading';
+import { PaymentUserService } from '../../service/PaymentUserService';
+import { useAuth } from '../../contexts/auth';
+import { isFuture, isPast } from 'date-fns';
 
 const modalHeight = 500;
 
 const Profile: React.FC = () => {
+    const { user } = useAuth();
     const formRef = useRef<FormHandles>(null);
     const modalizeRef = useRef<Modalize>(null);
-    
+
     const userService = new UserService();
+    const paymentUserService = new PaymentUserService();
     const windowHeight = Dimensions.get("window").height;
 
     const [alertSnackBarProp, setAlertSnackBarProp] = useState<ConfigAlertSnackBar>({} as ConfigAlertSnackBar);
-    const [user, setUser] = useState<MemberInterface>({} as MemberInterface);
+    const [member, setMember] = useState<MemberInterface>({} as MemberInterface);
+    const [labelPayment, setLabelPayment] = useState<any>({});
 
     const modalConfigOptions = {
         modalizeRef: modalizeRef,
@@ -40,16 +46,14 @@ const Profile: React.FC = () => {
 
     async function getUserInfo() {
         setLoading(true);
-
-        let userStorage = await AsyncStorage.getItem("@EMAuth:user") as string;
-        const storagedUser: MemberInterface = JSON.parse(userStorage);
-
-        userService.getById(storagedUser.id as number).then(
+        console.log("USER ID :",user.id)
+        userService.getById(Number(user.id)).then(
             response => {
+                validatePayment();
                 const userRes = response.data;
                 setLoading(false);
-                
-                setUser(userRes);
+
+                setMember(userRes);
                 formRef.current?.setData(userRes);
             },
             error => {
@@ -59,6 +63,39 @@ const Profile: React.FC = () => {
         );
     }
 
+    async function validatePayment() {
+        const responseUserPayment = await paymentUserService.getAllByUserId(Number(user.id))
+        const userPayment = responseUserPayment.data;
+
+        const statusPayment = userPayment.map((item: any, index: number) => {
+            let newDueDate = new Date(item.dueDate);
+
+            if (!item.active) {
+                item.status = 0; //PAGO
+                return;
+            };
+
+            if (isFuture(newDueDate)) item.status = 1; //PENDENTE
+            if (isPast(newDueDate) && item.active) item.status = 2; //ATRASADO
+
+            return item.status
+        });
+
+        if (statusPayment.includes(2)) {
+            setLabelPayment({
+                status: 2,
+                text: 'Pagamento em Atraso'
+            })
+
+            return;
+        }
+        
+        setLabelPayment({
+            status: 1,
+            text:`Próximo Pagamento: Dia ${member?.payday}`
+        })
+    };
+
     const onOpen = () => {
         modalizeRef.current?.open();
     };
@@ -66,7 +103,7 @@ const Profile: React.FC = () => {
     const handleSubmit: SubmitHandler<any> = (data) => {
         setLoading(true);
 
-        data.id = user.id;
+        data.id = member.id;
 
         userService.update(data).then(
             response => {
@@ -99,26 +136,26 @@ const Profile: React.FC = () => {
                     <View style={styles.boxUserInfo}>
                         <Image
                             style={styles.avatarImage}
-                            source={user.image ? { uri: user.image } : require("../../../assets/icons/user.png")}
+                            source={member.image ? { uri: member.image } : require("../../../assets/icons/user.png")}
                         />
 
                         <View>
                             <Text style={styles.defaltText}>
-                                {user.name} {" "}
-                                (Peso Inicial: {user.startingWeight}Kg)
+                                {member.name} {" "}
+                                (Peso Inicial: {member.startingWeight}Kg)
                             </Text>
-                            <Text style={styles.defaltText}>{user.cpf}</Text>
-                            <Text style={styles.defaltText}>{user.email}</Text>
-                            {user.payday ?
+                            <Text style={styles.defaltText}>{member.cpf}</Text>
+                            <Text style={styles.defaltText}>{member.email}</Text>
+                            {member.payday ?
                                 (
-                                    <RectButton style={{...styles.buttonPayDay, backgroundColor: Colors.colorSuccess}}>
+                                    <RectButton style={{ ...styles.buttonPayDay, backgroundColor: (labelPayment.status === 1) ? Colors.colorSuccess : Colors.colorDanger }}>
                                         <Text style={styles.buttonPayDayText} allowFontScaling={false}>
-                                            Dia para pagamento: {user.payday}
+                                            {labelPayment.text}
                                         </Text>
                                     </RectButton>
                                 ) :
                                 (
-                                    <RectButton style={{...styles.buttonPayDay, backgroundColor: Colors.colorDanger}}>
+                                    <RectButton style={{ ...styles.buttonPayDay, backgroundColor: Colors.colorDanger }}>
                                         <Text style={styles.buttonPayDayText} allowFontScaling={false} onPress={() => onOpen()}>
                                             Selecionar Forma de Pagamento
                                         </Text>
@@ -150,7 +187,7 @@ const Profile: React.FC = () => {
 
                             <RectButton style={styles.buttonUpdateWeight} onPress={() => onOpen()}>
                                 <Text style={styles.buttonUpdateWeightText} allowFontScaling={false}>
-                                    {user.currentWeight || user.startingWeight}Kg
+                                    {member.currentWeight || member.startingWeight}Kg
                                 </Text>
                             </RectButton>
                         </View>
@@ -216,6 +253,9 @@ const styles = StyleSheet.create({
         height: 100,
         marginRight: 24,
         borderRadius: 50,
+
+        borderWidth: 2,
+        borderColor: Colors.colorPrimary
     },
 
     separator: {
