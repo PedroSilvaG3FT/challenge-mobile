@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { FormHandles, SubmitHandler } from '@unform/core';
-import { RectButton } from 'react-native-gesture-handler';
+import { RectButton, TouchableOpacity } from 'react-native-gesture-handler';
 import { View, Text, StyleSheet, Image, Dimensions } from 'react-native';
 import { Form } from '@unform/mobile';
 import Input from '../../components/form/input';
@@ -17,6 +17,7 @@ import Loading from '../../components/Loading';
 import { PaymentUserService } from '../../service/PaymentUserService';
 import { useAuth } from '../../contexts/auth';
 import { isFuture, isPast } from 'date-fns';
+import AvatarSelection from '../../components/modals/AvatarSelection';
 
 const modalHeight = 500;
 
@@ -32,11 +33,19 @@ const Profile: React.FC = () => {
     const [alertSnackBarProp, setAlertSnackBarProp] = useState<ConfigAlertSnackBar>({} as ConfigAlertSnackBar);
     const [member, setMember] = useState<MemberInterface>({} as MemberInterface);
     const [labelPayment, setLabelPayment] = useState<any>({});
+    const [showModalAvatar, setShowModalAvatar] = useState(false);
 
     const modalConfigOptions = {
         modalizeRef: modalizeRef,
         onCloseModal: getUserInfo,
-        height: windowHeight - 130,
+        height: (windowHeight - 130),
+        data: {}
+    };
+
+    const modalAvatarConfigOptions = {
+        modalizeRef: modalizeRef,
+        onCloseModal: getUserInfo,
+        height: (windowHeight - 130),
         data: {}
     };
 
@@ -88,14 +97,15 @@ const Profile: React.FC = () => {
 
             return;
         }
-        
+
         setLabelPayment({
             status: 1,
-            text:`Próximo Pagamento: Dia ${member?.payday}`
+            text: `Próximo Pagamento: Dia ${member?.payday}`
         })
     };
 
-    const onOpen = () => {
+    const onOpen = (isModalAvatar?: boolean) => {
+        if (isModalAvatar) setShowModalAvatar(true);
         modalizeRef.current?.open();
     };
 
@@ -133,10 +143,12 @@ const Profile: React.FC = () => {
             <View style={styles.container}>
                 <Form ref={formRef} onSubmit={handleSubmit} style={{ width: "100%" }}>
                     <View style={styles.boxUserInfo}>
-                        <Image
-                            style={styles.avatarImage}
-                            source={member.image ? { uri: member.image } : require("../../../assets/icons/user.png")}
-                        />
+                        <TouchableOpacity onPress={() => onOpen(true)}>
+                            <Image
+                                style={styles.avatarImage}
+                                source={member.image ? { uri: member.image } : require("../../../assets/icons/user.png")}
+                            />
+                        </TouchableOpacity>
 
                         <View>
                             <Text style={styles.defaltText}>
@@ -204,10 +216,13 @@ const Profile: React.FC = () => {
             <Modalize
                 ref={modalizeRef}
                 snapPoint={modalHeight}
-                modalHeight={modalHeight}
-
+                modalHeight={!showModalAvatar ? modalHeight : windowHeight}
             >
-                <ModalUpdateWeight modalConfigOptions={modalConfigOptions} />
+                {showModalAvatar ?
+                    <AvatarSelection modalConfigOptions={modalConfigOptions} />
+                    :
+                    <ModalUpdateWeight modalConfigOptions={modalConfigOptions} />
+                }
             </Modalize>
 
             <AlertSnackBar config={alertSnackBarProp} />

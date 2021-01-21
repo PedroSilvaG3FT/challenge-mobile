@@ -7,7 +7,7 @@ export class MenuUserService {
         return api.get<any>(`${this.pathController}/${id}`);
     }
 
-    async update(userImage: any) {
+    update(userImage: any) {
         return api.post(`${this.pathController}/menuItemImage`, userImage);
     }
 }
