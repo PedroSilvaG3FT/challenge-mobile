@@ -46,7 +46,6 @@ const Profile: React.FC = () => {
 
     async function getUserInfo() {
         setLoading(true);
-        console.log("USER ID :",user.id)
         userService.getById(Number(user.id)).then(
             response => {
                 validatePayment();
