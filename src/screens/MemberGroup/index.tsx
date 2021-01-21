@@ -6,12 +6,19 @@ import { FlatList, RectButton } from "react-native-gesture-handler";
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { View, Text, StyleSheet, Image, Linking } from "react-native";
 import Loading from "../../components/Loading";
+import { useFocusEffect } from "@react-navigation/native";
 
 const MemberGroup: React.FC = () => {
     const [members, setMembers] = useState<MemberInterface[]>([]);
     const userService = new UserService();
     const linkGroupWpp = "https://chat.whatsapp.com/DUKo8O4FOQA1rdc9PJVHTd";
 
+    useFocusEffect(
+        React.useCallback(() => {
+            getMembers()
+        }, [])
+    );
+    
     useEffect(() => {
         getMembers();
     }, [])

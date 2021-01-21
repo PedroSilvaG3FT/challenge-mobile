@@ -58,8 +58,6 @@ const AvatarSelection: React.FC<ModalAvatarProps> = (props) => {
                 console.error("Erro ao atualizar imagem de usuario")
             }
         )
-
-        console.log(updateImageDTO);
     }
 
     return (
