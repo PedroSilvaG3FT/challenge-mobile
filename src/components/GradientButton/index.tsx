@@ -17,6 +17,7 @@ interface GradientButtonProps {
     colorIcon?: string;
     image?: string | null;
     onPress?: any;
+    centerItem?: boolean
 }
 
 const GradientButton: React.FC<GradientButtonProps> = (props) => {
@@ -32,6 +33,7 @@ const GradientButton: React.FC<GradientButtonProps> = (props) => {
         nameIcon: props.nameIcon,
         image: props.image,
         onPress: props.onPress,
+        centerItem: props.centerItem
     };
 
     const sizeButtonStyle = {
@@ -54,7 +56,14 @@ const GradientButton: React.FC<GradientButtonProps> = (props) => {
         <RectButton style={stylesGroup} onPress={dataButton.onPress}>
             <LinearGradient
                 colors={dataButton.colors}
-                style={[styles.buttonContent, borderRadiusStyle, { height: dataButton.height }]}
+                style={[
+                    styles.buttonContent, 
+                    borderRadiusStyle, 
+                    { 
+                        height: dataButton.height,
+                        justifyContent: dataButton.centerItem ? 'center' : 'space-between'
+                    }
+                ]}
                 start={[0, 1]}
                 end={[1, 0]}
             >
@@ -82,8 +91,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between',
-
     },
 
     buttonText: {

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, StatusBar, Image } from "react-native";
 import { RectButton } from "react-native-gesture-handler";
 import { useAuth } from "../../contexts/auth";
 
@@ -10,6 +10,9 @@ import { FormHandles, SubmitHandler } from "@unform/core";
 import Input from "../../components/form/input";
 import AlertSnackBar, { ConfigAlertSnackBar } from "../../components/AlertSnackBar";
 import Loading from "../../components/Loading";
+import Terms from "../Terms";
+import { LinearGradient } from "expo-linear-gradient";
+import GradientButton from "../../components/GradientButton";
 
 const Login: React.FC = () => {
   const { signIn } = useAuth();
@@ -18,12 +21,12 @@ const Login: React.FC = () => {
   const [alertSnackBarProp, setAlertSnackBarProp] = useState<ConfigAlertSnackBar>({} as ConfigAlertSnackBar);
 
   const handleLogin: SubmitHandler<any> = (data) => {
-    if(!data.email || !data.password) {
+    if (!data.email || !data.password) {
       setAlertSnackBarProp({
         message: "Preencha todos os campos",
         type: "warn",
       });
-      
+
       return;
     }
 
@@ -35,26 +38,45 @@ const Login: React.FC = () => {
 
   return (
     <>
-      <View style={styles.container}>
-        <Form ref={formRef} onSubmit={handleLogin} style={{ width: "100%" }}>
-          <Input name="email" placeholder="Email" autoCapitalize="none" />
-          <Input name="password" placeholder="Senha" secureTextEntry={true} autoCapitalize="none" />
+      <LinearGradient
+        style={styles.container}
+        colors={[Colors.colorDanger, Colors.colorPrimary, Colors.colorDanger]}
+        start={[2, 2]}
+        end={[2, 0]}
+      >
 
-          <RectButton
-            style={styles.button}
-            onPress={() => formRef.current?.submitForm()}
-          >
-            <Text style={styles.buttonText}>Entrar</Text>
-          </RectButton>
+        <View style={styles.boxGradient}>
+          <Image
+            style={styles.iconImage}
+            source={require("../../../assets/icons/running.png")}
+          />
+          <Text style={styles.labelImage}>Bem vindo!</Text>
+          <Text style={styles.labelImage}>Insira seus dados para entrar</Text>
+        </View>
 
-          <Text
-            style={styles.singUpText}
-            onPress={() => navigation.navigate("EmailMemberRegister")}
-          >
-            Cadastre-se
-        </Text>
-        </Form>
-      </View>
+        <View style={styles.contentLogin}>
+          <Form ref={formRef} onSubmit={handleLogin} style={{ width: "100%" }}>
+            <View style={{padding: 10}}>
+              <Input name="email" placeholder="Email" autoCapitalize="none" />
+              <Input name="password" placeholder="Senha" secureTextEntry={true} autoCapitalize="none" />
+            </View>
+
+            <GradientButton
+              height={60}
+              centerItem
+              title="Entrar"
+              onPress={() => formRef.current?.submitForm()}
+            />
+
+            <Text
+              style={styles.singUpText}
+              onPress={() => navigation.navigate("EmailMemberRegister")}
+            >
+              Cadastre-se
+          </Text>
+          </Form>
+        </View>
+      </LinearGradient>
 
       <AlertSnackBar config={alertSnackBarProp} />
     </>
@@ -64,36 +86,41 @@ const Login: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 24,
+    paddingTop: StatusBar.currentHeight,
+    backgroundColor: Colors.bgDarkSecondary,
   },
 
-  button: {
-    backgroundColor: Colors.colorPrimary,
-    height: 60,
-    flexDirection: "row",
-    borderRadius: 10,
-    overflow: "hidden",
-    alignItems: "center",
-    marginTop: 8,
+  iconImage: {
+    width:  125,
+    height: 125,
+    marginBottom: 8
   },
 
-  buttonText: {
-    flex: 1,
-    justifyContent: "center",
-    textAlign: "center",
-    color: "#FFF",
-    fontSize: 20,
+  labelImage: {
+    color: Colors.textLight
+  },
+
+  boxGradient: {
+    height: 248,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  contentLogin: {
+    backgroundColor: Colors.bgDarkPrimary,
+    height: '100%',
+    borderRadius: 20,
+    padding: 24
   },
 
   singUpText: {
-    marginVertical: 16,
-    color: Colors.colorPrimary,
     fontSize: 16,
     fontWeight: "bold",
+    marginVertical: 16,
+    textAlign: 'center',
+    color: Colors.colorPrimary,
     textDecorationLine: "underline",
-    textAlign: 'center'
   },
 });
 
