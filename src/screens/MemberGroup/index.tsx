@@ -51,15 +51,17 @@ const MemberGroup: React.FC = () => {
 
                 <View>
                     <Text style={styles.textDefault}>
-                        Nome: {member.name}
+                        {member.name}
                     </Text>
 
                     <Text style={styles.textDefault}>
-                        Peso Inicial: {member.startingWeight}kg
+                        <Text style={{ color: Colors.colorSuccess }}>Peso Inicial: {" "}</Text>
+                        {member.startingWeight}kg
                     </Text>
 
                     <Text style={styles.textDefault}>
-                        Peso Atual: {member.currentWeight || member.startingWeight}kg
+                        <Text style={{ color: Colors.colorDangerLight }}>Peso Atual: {" "}</Text>
+                        {member.currentWeight || member.startingWeight}kg
                     </Text>
                 </View>
             </View>
