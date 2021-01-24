@@ -52,12 +52,13 @@ const Profile: React.FC = () => {
         setLoading(true);
         userService.getById(Number(user.id)).then(
             response => {
-                validatePayment();
                 const userRes = response.data;
                 setLoading(false);
                 setMember(userRes);
                 setShowModalAvatar(false);
                 formRef.current?.setData(userRes);
+                
+                validatePayment(userRes);
             },
             error => {
                 setLoading(false);
@@ -66,8 +67,8 @@ const Profile: React.FC = () => {
         );
     }
 
-    async function validatePayment() {
-        const responseUserPayment = await paymentUserService.getAllByUserId(Number(user.id))
+    async function validatePayment(member: MemberInterface) {
+        const responseUserPayment = await paymentUserService.getAllByUserId(Number(member.id))
         const userPayment = responseUserPayment.data;
 
         const statusPayment = userPayment.map((item: any, index: number) => {
@@ -95,7 +96,7 @@ const Profile: React.FC = () => {
 
         setLabelPayment({
             status: 1,
-            text: `Próximo Pagamento: Dia ${member?.payday || 10}`
+            text: `Próximo Pagamento: Dia ${member.payday || 10}`
         })
     };
 
@@ -158,24 +159,15 @@ const Profile: React.FC = () => {
                             </Text>
                             <Text style={styles.defaltText}>{member.cpf}</Text>
                             <Text style={styles.defaltText}>{member.email}</Text>
-                            {member.payday ?
-                                (
-                                    <RectButton style={{
-                                        ...styles.buttonPayDay,
-                                        backgroundColor: (labelPayment.status === 1) ? Colors.colorSuccess : Colors.colorDanger
-                                    }}>
-                                        <Text style={styles.buttonPayDayText} allowFontScaling={false}>
-                                            {labelPayment.text}
-                                        </Text>
-                                    </RectButton>
-                                ) :
-                                (
-                                    <RectButton style={{ ...styles.buttonPayDay, backgroundColor: Colors.colorDanger }}>
-                                        <Text style={styles.buttonPayDayText} allowFontScaling={false} onPress={() => onOpen()}>
-                                            Selecionar Forma de Pagamento
-                                        </Text>
-                                    </RectButton>
-                                )}
+                            <RectButton style={{
+                                ...styles.buttonPayDay,
+                                backgroundColor: (labelPayment.status === 1) ? Colors.colorSuccess : Colors.colorDanger
+                            }}>
+                                <Text style={styles.buttonPayDayText} allowFontScaling={false}>
+                                    {labelPayment.text}
+                                </Text>
+                            </RectButton>
+
                         </View>
                     </View>
 

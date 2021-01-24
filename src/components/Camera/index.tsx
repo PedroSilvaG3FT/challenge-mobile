@@ -44,7 +44,7 @@ const CameraComponent: React.FC<CameraProps> = (props) => {
     async function takePicture() {
         if (!cameraRef) return;
 
-        const data = await cameraRef.current.takePictureAsync({ base64: true });
+        const data = await cameraRef.current.takePictureAsync({ base64: true, quality: 0 });
         setCapturedImage(data);
         setModalPreview(true)
     }
