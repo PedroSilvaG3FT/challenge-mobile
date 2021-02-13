@@ -40,7 +40,7 @@ const Menu: React.FC = () => {
                 setLoading(false);
             },
             error => {
-                console.error("Erro ao consutar Menu do usuário")
+                setLoading(false);
             }
         )
     }

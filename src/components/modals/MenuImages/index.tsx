@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Image, Modal, ScrollView, StyleSheet } from 'react-native';
+import { Image, ScrollView, StyleSheet } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { IHandles } from 'react-native-modalize/lib/options';
 import Colors from '../../../constants/Colors';
@@ -9,7 +9,6 @@ import CameraComponent from '../../Camera';
 import { Text, View } from '../../Themed';
 import { Feather as Icon } from '@expo/vector-icons';
 import { useAuth } from '../../../contexts/auth';
-import { ActivityIndicator } from 'react-native-paper';
 import Loading from '../../Loading';
 
 interface ModalImagesProps {
@@ -43,7 +42,7 @@ const MenuImagesModal: React.FC<ModalImagesProps> = (props) => {
     function saveImageItem(itemImage: any) {
         setLoading(true);
         
-        menuUserService.update(itemImage).then(
+        menuUserService.updateImage(itemImage).then(
             response => {
                 setItemSelected(0);
                 setLoading(false);

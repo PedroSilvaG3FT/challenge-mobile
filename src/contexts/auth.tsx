@@ -66,7 +66,7 @@ export const AuthProvider: React.FC = ({ children }) => {
                 if (storagedUser === JSON.stringify(userResponse)) {
                     return;
                 }
-                
+
                 setUser(userResponse);
                 AsyncStorage.setItem("@EMAuth:user", JSON.stringify(response.data));
             },
