@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import React, { useEffect, useState } from 'react';
-import { Image, StatusBar, StyleSheet } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
+import { Image, Linking, StatusBar, StyleSheet } from 'react-native';
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import Loading from '../../components/Loading';
 import { Text, View } from '../../components/Themed';
 import Colors from '../../constants/Colors';
@@ -25,6 +25,7 @@ const Exercice: React.FC = () => {
 
         exerciceUserService.getById(storagedUser.id as number).then(
             response => {
+                console.log("EXERCICIO", response.data)
                 setExerciseMember(response.data);
                 setLoading(false);
             },
@@ -69,17 +70,28 @@ const Exercice: React.FC = () => {
                                         <View>
                                             {day.exercices.map((exercice, indexExercice) => (
                                                 <View style={styles.boxMeal} key={String(indexExercice)}>
-                                                    <Text style={styles.textMeal}>
-                                                        &nbsp;&bull; {""}
-                                                        <Text> {exercice.exercice?.name} {""}</Text>
-                                                        ({exercice.amount} Repetições)
-                                                    </Text>
+                                                    {!exercice.isLink ? (
+                                                        <Text style={styles.textMeal}>
+                                                            &nbsp;&bull; {""}
+                                                            <Text> {exercice.exercice?.name} {""}</Text>
+                                                            ({exercice.amount})
+                                                        </Text>
+                                                    ) : (
+                                                        <>
+                                                            <TouchableOpacity
+                                                                style={styles.linkButton}
+                                                                onPress={() => Linking.openURL(exercice.linkUrl)}
+                                                            >
+                                                                <Text>Clique para assistir</Text>
+                                                            </TouchableOpacity>
+                                                        </>
+                                                    )}
                                                 </View>
                                             ))}
                                         </View>
                                         :
                                         <View style={styles.boxDayFree}>
-                                            <Text style={styles.textDayFree}>- Descanso -</Text>
+                                            <Text>- Descanso -</Text>
                                         </View>
                                     }
                                 </View>
@@ -103,6 +115,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 28,
         textAlign: 'center',
+        backgroundColor: 'red'
     },
 
     subTitle: {
@@ -122,20 +135,30 @@ const styles = StyleSheet.create({
     },
 
     boxDayContent: {
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        flexDirection: 'row',
         backgroundColor: 'transparent'
     },
 
     boxMenuLabel: {
-        marginBottom: 8,
+        fontSize: 24,
+        marginBottom: 12,
+        paddingBottom: 12,
+        textAlign: 'center',
         color: Colors.colorPrimary,
-        fontSize: 16,
     },
 
     boxMeal: {
         backgroundColor: Colors.bgDarkSecondary,
+        minWidth: '100%',
+    },
+
+    linkButton: {
+        borderWidth: 1,
+        borderRadius: 8,
+        paddingVertical: 8,
+        marginVertical: 12,
+        paddingHorizontal: 8,
+        alignItems: 'center',
+        borderColor: Colors.colorDangerLight,
     },
 
     textMeal: {
@@ -148,10 +171,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: 'transparent'
     },
-
-    textDayFree: {
-    }
-
 })
 
 

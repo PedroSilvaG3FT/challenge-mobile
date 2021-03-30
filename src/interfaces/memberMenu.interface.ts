@@ -18,5 +18,6 @@ export interface MealInterface {
     typeMealId: number,
     descripition: string,
     imageItem: string,
+    feedback?: string,
     rating?: number,
 }
