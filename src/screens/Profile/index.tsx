@@ -6,7 +6,6 @@ import { Form } from '@unform/mobile';
 import Input from '../../components/form/input';
 import Colors from '../../constants/Colors';
 import GlobalStyle from '../../constants/GlobalStyle';
-import AsyncStorage from '@react-native-community/async-storage';
 import MemberInterface from '../../interfaces/member.interface';
 import { UserService } from '../../service/UserService';
 import { Modalize } from 'react-native-modalize';

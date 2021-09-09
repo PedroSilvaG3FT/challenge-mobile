@@ -27,4 +27,5 @@ export type TabTipsNewsParamList = {
 
 export type TabSettingsParamList = {
   TabSettingsScreen: undefined
+  ChangePasswordScreen: undefined;
 }

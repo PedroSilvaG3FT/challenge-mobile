@@ -31,12 +31,6 @@ const Routes: React.FC = () => {
         )
     }
 
-    if (signed && !user.payday) {
-        return (
-            <ModalPayment />
-        )
-    }
-
     return signed ? <AppRoutes /> : <AuthRoutes />;
 }
 

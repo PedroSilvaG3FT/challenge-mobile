@@ -22,4 +22,8 @@ export class UserService {
         return api.put('user', data);
     }
 
+    updatePassword(data: { password: string, userId: number }) {
+        return api.put('user/change-password', data)
+    }
+
 }

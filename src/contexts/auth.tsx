@@ -13,6 +13,7 @@ interface AuthContextData {
     user: object | any;
     loading: boolean;
     signIn(login: LoginInterface): Promise<void>;
+    signInAccessCode(accessCode: string): Promise<void>;
     signOut(): void;
     getUser(): void;
     showLoading(): void;
@@ -44,9 +45,7 @@ export const AuthProvider: React.FC = ({ children }) => {
     }, []);
 
     useEffect(() => {
-        if (user && !user.active) {
-            getUser();
-        }
+        if (user && !user.active) getUser();
     },[user])
 
     function showLoading() {
@@ -56,7 +55,6 @@ export const AuthProvider: React.FC = ({ children }) => {
     function hideLoading() {
         setLoading(false);
     }
-
 
     async function getUser() {
         const storagedUser: any = await AsyncStorage.getItem("@EMAuth:user");
@@ -95,6 +93,23 @@ export const AuthProvider: React.FC = ({ children }) => {
         );
     }
 
+    async function signInAccessCode(accessCode: string) {
+        auth.singInAccessCode(accessCode).then(
+            async response => {
+                const responseData = await response.data;
+                setUser(responseData.user);
+                AsyncStorage.setItem("@EMAuth:user", JSON.stringify(responseData.user));
+                AsyncStorage.setItem("@EMAuth:token", responseData.token);
+            },
+            error => {
+                setAlertSnackBarProp({
+                    message: "Usuario não encontrado ou o código informado não existe",
+                    type: "error",
+                });
+            }
+        );
+    }
+
     function signOut() {
         AsyncStorage.clear().then(() => {
             setUser(null);
@@ -107,7 +122,8 @@ export const AuthProvider: React.FC = ({ children }) => {
             approved: user?.active, 
             acceptTerm: user?.acceptTerm, 
             user, 
-            signIn, 
+            signIn,
+            signInAccessCode, 
             signOut, 
             getUser, 
             loading,

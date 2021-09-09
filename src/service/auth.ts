@@ -24,3 +24,7 @@ interface ResponseToken {
 export function singIn(userLogin: any): Promise<ResponseToken> {
     return api.post('autentication', userLogin);
 }
+
+export function singInAccessCode(accessCode: string): Promise<ResponseToken> {
+    return api.post('autentication-accessCode', { accessCode });
+}

@@ -20,4 +20,6 @@ export default interface MemberInterface {
     dateCreation: Date;
 
     currentWeight?: number;
+    accessCode?: string;
+    dateApproval?: Date;
 }

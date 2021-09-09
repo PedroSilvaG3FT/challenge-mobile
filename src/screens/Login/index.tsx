@@ -1,6 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
 import { Text, View, StyleSheet, StatusBar, Image } from "react-native";
-import { RectButton } from "react-native-gesture-handler";
+import React, {  useRef, useState } from "react";
 import { useAuth } from "../../contexts/auth";
 
 import Colors from "../../constants/Colors";
@@ -8,11 +7,10 @@ import { useNavigation } from "@react-navigation/native";
 import { Form } from "@unform/mobile";
 import { FormHandles, SubmitHandler } from "@unform/core";
 import Input from "../../components/form/input";
-import AlertSnackBar, { ConfigAlertSnackBar } from "../../components/AlertSnackBar";
-import Loading from "../../components/Loading";
-import Terms from "../Terms";
 import { LinearGradient } from "expo-linear-gradient";
 import GradientButton from "../../components/GradientButton";
+import AlertSnackBar, { ConfigAlertSnackBar } from "../../components/AlertSnackBar";
+import { validateEmail } from "../../helpers/emailValidation";
 
 const Login: React.FC = () => {
   const { signIn } = useAuth();
@@ -31,6 +29,11 @@ const Login: React.FC = () => {
     }
 
     data.email = data.email.trim();
+
+    if(!validateEmail(data.email)) {
+      setAlertSnackBarProp({ message: "Email inválido", type: "warn" });
+      return;  
+    }
 
     signIn(data);
   };
@@ -57,7 +60,7 @@ const Login: React.FC = () => {
         <View style={styles.contentLogin}>
           <Form ref={formRef} onSubmit={handleLogin} style={{ width: "100%" }}>
             <View style={{padding: 10}}>
-              <Input name="email" placeholder="Email" autoCapitalize="none" />
+              <Input name="email" placeholder="Email" keyboardType="email-address" autoCapitalize="none" />
               <Input name="password" placeholder="Senha" secureTextEntry={true} autoCapitalize="none" />
             </View>
 
@@ -70,9 +73,16 @@ const Login: React.FC = () => {
 
             <Text
               style={styles.singUpText}
+              onPress={() => navigation.navigate("LoginAccessCode")}
+            >
+              Esqueceu sua senha ?
+            </Text>
+
+            <Text
+              style={styles.singUpText}
               onPress={() => navigation.navigate("EmailMemberRegister")}
             >
-              Cadastre-se
+              Inscreva-se
           </Text>
           </Form>
         </View>
