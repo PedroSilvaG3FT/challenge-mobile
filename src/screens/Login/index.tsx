@@ -1,7 +1,7 @@
 import { Text, View, StyleSheet, StatusBar, Image } from "react-native";
 import React, {  useRef, useState } from "react";
 import { useAuth } from "../../contexts/auth";
-
+import { version } from '../../../package.json'
 import Colors from "../../constants/Colors";
 import { useNavigation } from "@react-navigation/native";
 import { Form } from "@unform/mobile";
@@ -84,6 +84,8 @@ const Login: React.FC = () => {
             >
               Inscreva-se
           </Text>
+
+          <Text style={styles.versionText}>v{version}</Text>
           </Form>
         </View>
       </LinearGradient>
@@ -132,6 +134,13 @@ const styles = StyleSheet.create({
     color: Colors.colorPrimary,
     textDecorationLine: "underline",
   },
+
+  versionText: {
+    fontSize: 16,
+    color: '#ffffff45',
+    textAlign: 'center',
+
+  }
 });
 
 export default Login;

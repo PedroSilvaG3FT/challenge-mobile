@@ -11,7 +11,7 @@ import { useFocusEffect } from "@react-navigation/native";
 const MemberGroup: React.FC = () => {
     const [members, setMembers] = useState<MemberInterface[]>([]);
     const userService = new UserService();
-    const linkGroupWpp = "https://chat.whatsapp.com/DUKo8O4FOQA1rdc9PJVHTd";
+    const linkGroupWpp = "https://chat.whatsapp.com/HeALxPolsT62QjB0SznzBj";
 
     useFocusEffect(
         React.useCallback(() => {
