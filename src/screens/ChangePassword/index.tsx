@@ -1,20 +1,23 @@
-import { Form } from '@unform/mobile';
-import Colors from '../../constants/Colors';
-import Input from '../../components/form/input';
-import React, { useRef, useState } from 'react';
-import { FormHandles, SubmitHandler } from '@unform/core';
+import { Form } from "@unform/mobile";
+import Colors from "../../constants/Colors";
+import Input from "../../components/form/input";
+import React, { useRef, useState } from "react";
+import { FormHandles, SubmitHandler } from "@unform/core";
 import { Text, View, StyleSheet, Image } from "react-native";
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import AlertSnackBar, { ConfigAlertSnackBar } from '../../components/AlertSnackBar';
-import { UserService } from '../../service/UserService';
-import AsyncStorage from '@react-native-community/async-storage';
-import { useNavigation } from '@react-navigation/core';
+import { TouchableOpacity } from "react-native-gesture-handler";
+import AlertSnackBar, {
+  ConfigAlertSnackBar,
+} from "../../components/AlertSnackBar";
+import { UserService } from "../../service/UserService";
+import { AsyncStorage } from "react-native";
+import { useNavigation } from "@react-navigation/core";
 
 const ChangePassword: React.FC = () => {
   const navigation = useNavigation();
   const userService = new UserService();
   const formRef = useRef<FormHandles>(null);
-  const [alertSnackBarProp, setAlertSnackBarProp] = useState<ConfigAlertSnackBar>({} as ConfigAlertSnackBar);
+  const [alertSnackBarProp, setAlertSnackBarProp] =
+    useState<ConfigAlertSnackBar>({} as ConfigAlertSnackBar);
 
   const handleConfirm: SubmitHandler<any> = async (data) => {
     const password = data.password.trim();
@@ -27,17 +30,22 @@ const ChangePassword: React.FC = () => {
       });
       return;
     }
-    
+
     try {
-        let userStorage = await AsyncStorage.getItem("@EMAuth:user") as string;
-        const storagedUser = JSON.parse(userStorage);
-    
-        const { data } = await userService.updatePassword({ password, userId: storagedUser.id})
-        setAlertSnackBarProp({ message: data.message, type: "success" });
-        setTimeout(() => navigation.navigate("TabSettingsScreen"), 3000)
-        
+      let userStorage = (await AsyncStorage.getItem("@EMAuth:user")) as string;
+      const storagedUser = JSON.parse(userStorage);
+
+      const { data } = await userService.updatePassword({
+        password,
+        userId: storagedUser.id,
+      });
+      setAlertSnackBarProp({ message: data.message, type: "success" });
+      setTimeout(() => navigation.navigate("TabSettingsScreen"), 3000);
     } catch (error) {
-        setAlertSnackBarProp({ message: "Erro ao atualizar senha", type: "success" });
+      setAlertSnackBarProp({
+        message: "Erro ao atualizar senha",
+        type: "success",
+      });
     }
   };
 
@@ -52,8 +60,18 @@ const ChangePassword: React.FC = () => {
         </View>
 
         <Form ref={formRef} onSubmit={handleConfirm} style={{ width: "100%" }}>
-          <Input name="password" placeholder="Insira sua nova senha" secureTextEntry={true} autoCapitalize="none" />
-          <Input name="passwordConfirm" placeholder="Confirme a senha" secureTextEntry={true} autoCapitalize="none" />
+          <Input
+            name="password"
+            placeholder="Insira sua nova senha"
+            secureTextEntry={true}
+            autoCapitalize="none"
+          />
+          <Input
+            name="passwordConfirm"
+            placeholder="Confirme a senha"
+            secureTextEntry={true}
+            autoCapitalize="none"
+          />
 
           <TouchableOpacity
             style={styles.button}
@@ -75,24 +93,24 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 24,
-    paddingVertical: 48
+    paddingVertical: 48,
   },
 
   boxImage: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 24
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 24,
   },
 
   iconImage: {
     width: 150,
     height: 150,
-    marginBottom: 24
+    marginBottom: 24,
   },
 
   boxImageText: {
     color: "#FFF",
-    fontSize: 16
+    fontSize: 16,
   },
 
   button: {
@@ -114,4 +132,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ChangePassword
+export default ChangePassword;

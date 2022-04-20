@@ -1,311 +1,346 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { FormHandles, SubmitHandler } from '@unform/core';
-import { RectButton, TouchableOpacity } from 'react-native-gesture-handler';
-import { View, Text, StyleSheet, Image, Dimensions } from 'react-native';
-import { Form } from '@unform/mobile';
-import Input from '../../components/form/input';
-import Colors from '../../constants/Colors';
-import GlobalStyle from '../../constants/GlobalStyle';
-import MemberInterface from '../../interfaces/member.interface';
-import { UserService } from '../../service/UserService';
-import { Modalize } from 'react-native-modalize';
-import GradientButton from '../../components/GradientButton';
-import AlertSnackBar, { ConfigAlertSnackBar } from '../../components/AlertSnackBar';
-import ModalUpdateWeight from '../../components/modals/UpdateWeight';
-import Loading from '../../components/Loading';
-import { PaymentUserService } from '../../service/PaymentUserService';
-import { useAuth } from '../../contexts/auth';
-import { isFuture, isPast } from 'date-fns';
-import AvatarSelection from '../../components/modals/AvatarSelection';
-import { useNavigation } from '@react-navigation/native';
+import React, { useEffect, useRef, useState } from "react";
+import { FormHandles, SubmitHandler } from "@unform/core";
+import { RectButton, TouchableOpacity } from "react-native-gesture-handler";
+import { View, Text, StyleSheet, Image, Dimensions } from "react-native";
+import { Form } from "@unform/mobile";
+import Input from "../../components/form/input";
+import Colors from "../../constants/Colors";
+import GlobalStyle from "../../constants/GlobalStyle";
+import MemberInterface from "../../interfaces/member.interface";
+import { UserService } from "../../service/UserService";
+import { Modalize } from "react-native-modalize";
+import GradientButton from "../../components/GradientButton";
+import AlertSnackBar, {
+  ConfigAlertSnackBar,
+} from "../../components/AlertSnackBar";
+import ModalUpdateWeight from "../../components/modals/UpdateWeight";
+import Loading from "../../components/Loading";
+import { PaymentUserService } from "../../service/PaymentUserService";
+import { useAuth } from "../../contexts/auth";
+import { isFuture, isPast } from "date-fns";
+import AvatarSelection from "../../components/modals/AvatarSelection";
+import { useNavigation } from "@react-navigation/native";
+import { USER_TYPE } from "../../constants/UserType";
 
 const modalHeight = 500;
 
 const Profile: React.FC = () => {
-    const { user } = useAuth();
-    const navigation = useNavigation();
-    const formRef = useRef<FormHandles>(null);
-    const modalizeRef = useRef<Modalize>(null);
+  const { user } = useAuth();
+  const navigation = useNavigation();
+  const formRef = useRef<FormHandles>(null);
+  const modalizeRef = useRef<Modalize>(null);
 
-    const userService = new UserService();
-    const paymentUserService = new PaymentUserService();
-    const windowHeight = Dimensions.get("window").height;
+  const userService = new UserService();
+  const paymentUserService = new PaymentUserService();
+  const windowHeight = Dimensions.get("window").height;
 
-    const [alertSnackBarProp, setAlertSnackBarProp] = useState<ConfigAlertSnackBar>({} as ConfigAlertSnackBar);
-    const [member, setMember] = useState<MemberInterface>({} as MemberInterface);
-    const [labelPayment, setLabelPayment] = useState<any>({});
-    const [showModalAvatar, setShowModalAvatar] = useState(false);
+  const [alertSnackBarProp, setAlertSnackBarProp] =
+    useState<ConfigAlertSnackBar>({} as ConfigAlertSnackBar);
+  const [member, setMember] = useState<MemberInterface>({} as MemberInterface);
+  const [labelPayment, setLabelPayment] = useState<any>({});
+  const [showModalAvatar, setShowModalAvatar] = useState(false);
 
-    const modalConfigOptions = {
-        modalizeRef: modalizeRef,
-        onCloseModal: getUserInfo,
-        height: (windowHeight - 130),
-        data: {}
-    };
+  const modalConfigOptions = {
+    modalizeRef: modalizeRef,
+    onCloseModal: getUserInfo,
+    height: windowHeight - 130,
+    data: {},
+  };
 
-    useEffect(() => {
-        getUserInfo();
-    }, [])
+  useEffect(() => {
+    getUserInfo();
+  }, []);
 
-    async function getUserInfo() {
-        setLoading(true);
-        userService.getById(Number(user.id)).then(
-            response => {
-                const userRes = response.data;
-                setLoading(false);
-                setMember(userRes);
-                setShowModalAvatar(false);
-                formRef.current?.setData(userRes);
-                
-                validatePayment(userRes);
-            },
-            error => {
-                setLoading(false);
-                console.error("Erro ao buscar usuário")
-            }
-        );
+  const isChallenge = user.type === USER_TYPE.challenge;
+
+  async function getUserInfo() {
+    setLoading(true);
+    userService.getById(Number(user.id)).then(
+      (response) => {
+        const userRes = response.data;
+        setLoading(false);
+        setMember(userRes);
+        setShowModalAvatar(false);
+        formRef.current?.setData(userRes);
+
+        validatePayment(userRes);
+      },
+      (error) => {
+        setLoading(false);
+        console.error("Erro ao buscar usuário");
+      }
+    );
+  }
+
+  async function validatePayment(member: MemberInterface) {
+    if (isChallenge) setLabelPayment({ status: 1, text: "" });
+
+    const responseUserPayment = await paymentUserService.getAllByUserId(
+      Number(member.id)
+    );
+    const userPayment = responseUserPayment.data;
+
+    const statusPayment = userPayment.map((item: any, index: number) => {
+      const newDueDate = new Date(item.dueDate);
+
+      if (!item.active) {
+        item.status = 0; //PAGO
+        return;
+      }
+
+      if (isFuture(newDueDate)) item.status = 1; //PENDENTE
+      if (isPast(newDueDate) && item.active) item.status = 2; //ATRASADO
+
+      return item.status;
+    });
+
+    if (statusPayment.includes(2)) {
+      setLabelPayment({
+        status: 2,
+        text: "Pagamento em Atraso",
+      });
+
+      return;
     }
 
-    async function validatePayment(member: MemberInterface) {
-        const responseUserPayment = await paymentUserService.getAllByUserId(Number(member.id))
-        const userPayment = responseUserPayment.data;
+    setLabelPayment({
+      status: 1,
+      text: `Próximo Pagamento: Dia ${member.payday || 10}`,
+    });
+  }
 
-        const statusPayment = userPayment.map((item: any, index: number) => {
-            const newDueDate = new Date(item.dueDate);
+  const onOpen = (isModalAvatar?: boolean) => {
+    if (isModalAvatar) setShowModalAvatar(true);
+    modalizeRef.current?.open();
+  };
 
-            if (!item.active) {
-                item.status = 0; //PAGO
-                return;
-            };
+  const handleSubmit: SubmitHandler<any> = (data) => {
+    setLoading(true);
 
-            if (isFuture(newDueDate)) item.status = 1; //PENDENTE
-            if (isPast(newDueDate) && item.active) item.status = 2; //ATRASADO
+    data.id = member.id;
 
-            return item.status
+    userService.update(data).then(
+      (response) => {
+        setAlertSnackBarProp({
+          message: "Informações atualizadas com sucesso !",
+          type: "success",
         });
 
-        if (statusPayment.includes(2)) {
-            setLabelPayment({
-                status: 2,
-                text: 'Pagamento em Atraso'
-            })
+        setLoading(false);
+        navigation.navigate("MemberScreen");
+      },
+      (error) => {
+        setAlertSnackBarProp({
+          message: "Erro ao atualizar informações",
+          type: "error",
+        });
 
-            return;
-        }
+        setLoading(false);
+        setMember(member);
+      }
+    );
+  };
 
-        setLabelPayment({
-            status: 1,
-            text: `Próximo Pagamento: Dia ${member.payday || 10}`
-        })
-    };
+  const [loading, setLoading] = useState(false);
+  if (loading) return <Loading />;
 
-    const onOpen = (isModalAvatar?: boolean) => {
-        if (isModalAvatar) setShowModalAvatar(true);
-        modalizeRef.current?.open();
-    };
+  return (
+    <>
+      <View style={styles.container}>
+        <Form ref={formRef} onSubmit={handleSubmit} style={{ width: "100%" }}>
+          <View style={styles.boxUserInfo}>
+            <TouchableOpacity onPress={() => onOpen(true)}>
+              <Image
+                style={{
+                  ...styles.avatarImage,
+                  borderColor:
+                    labelPayment.status === 1
+                      ? Colors.colorSuccess
+                      : Colors.colorDanger,
+                }}
+                source={
+                  member.image
+                    ? { uri: member.image }
+                    : require("../../../assets/icons/user.png")
+                }
+              />
+            </TouchableOpacity>
 
-    const handleSubmit: SubmitHandler<any> = (data) => {
-        setLoading(true);
+            <View>
+              <Text style={styles.defaltText}>
+                {member.name} (Peso Inicial: {member.startingWeight}Kg)
+              </Text>
+              <Text style={styles.defaltText}>{member.cpf}</Text>
+              <Text style={styles.defaltText}>{member.email}</Text>
 
-        data.id = member.id;
+              {isChallenge && (
+                <RectButton
+                  style={{
+                    ...styles.buttonPayDay,
+                    backgroundColor:
+                      labelPayment.status === 1
+                        ? Colors.colorSuccess
+                        : Colors.colorDanger,
+                  }}
+                >
+                  <Text
+                    style={styles.buttonPayDayText}
+                    allowFontScaling={false}
+                  >
+                    {labelPayment.text}
+                  </Text>
+                </RectButton>
+              )}
+            </View>
+          </View>
 
-        userService.update(data).then(
-            response => {
-                setAlertSnackBarProp({
-                    message: "Informações atualizadas com sucesso !",
-                    type: "success",
-                });
+          <View style={styles.separator}></View>
 
-                setLoading(false);
-                navigation.navigate("MemberScreen");
-            },
-            error => {
-                setAlertSnackBarProp({
-                    message: "Erro ao atualizar informações",
-                    type: "error",
-                });
+          <View>
+            <View style={GlobalStyle.formField}>
+              <Text style={GlobalStyle.label}>Telefone</Text>
 
-                setLoading(false);
-                setMember(member);
-
-            }
-        )
-
-    };
-
-    const [loading, setLoading] = useState(false);
-    if (loading) return <Loading />
-
-    return (
-        <>
-            <View style={styles.container}>
-                <Form ref={formRef} onSubmit={handleSubmit} style={{ width: "100%" }}>
-                    <View style={styles.boxUserInfo}>
-                        <TouchableOpacity onPress={() => onOpen(true)}>
-                            <Image
-                                style={{
-                                    ...styles.avatarImage,
-                                    borderColor: (labelPayment.status === 1) ? Colors.colorSuccess : Colors.colorDanger
-                                }}
-                                source={member.image ? { uri: member.image } : require("../../../assets/icons/user.png")}
-                            />
-                        </TouchableOpacity>
-
-                        <View>
-                            <Text style={styles.defaltText}>
-                                {member.name} {" "}
-                                (Peso Inicial: {member.startingWeight}Kg)
-                            </Text>
-                            <Text style={styles.defaltText}>{member.cpf}</Text>
-                            <Text style={styles.defaltText}>{member.email}</Text>
-                            <RectButton style={{
-                                ...styles.buttonPayDay,
-                                backgroundColor: (labelPayment.status === 1) ? Colors.colorSuccess : Colors.colorDanger
-                            }}>
-                                <Text style={styles.buttonPayDayText} allowFontScaling={false}>
-                                    {labelPayment.text}
-                                </Text>
-                            </RectButton>
-
-                        </View>
-                    </View>
-
-                    <View style={styles.separator}></View>
-
-                    <View>
-                        <View style={GlobalStyle.formField}>
-                            <Text style={GlobalStyle.label}>Telefone</Text>
-
-                            <Input
-                                name="phoneNumber"
-                                mask="(99)99999-9999"
-                                style={GlobalStyle.input}
-                                keyboardType="phone-pad" />
-                        </View>
-
-                        <View style={GlobalStyle.formField}>
-                            <Text style={GlobalStyle.label}>Altura</Text>
-                            <Input name="height" style={GlobalStyle.input} keyboardType="decimal-pad" />
-                        </View>
-
-                        <View style={styles.boxUpdateWeight}>
-                            <Text style={styles.labelBoxUpdateWeight}>Atualizar Peso</Text>
-
-                            <RectButton style={styles.buttonUpdateWeight} onPress={() => onOpen()}>
-                                <Text style={styles.buttonUpdateWeightText} allowFontScaling={false}>
-                                    {member.currentWeight || member.startingWeight}Kg
-                                </Text>
-                            </RectButton>
-                        </View>
-                    </View>
-                </Form>
-
-                <GradientButton
-                    height={60}
-                    title="Salvar"
-                    nameIcon="account-check-outline"
-                    onPress={() => formRef.current?.submitForm()}
-                />
+              <Input
+                name="phoneNumber"
+                mask="(99)99999-9999"
+                style={GlobalStyle.input}
+                keyboardType="phone-pad"
+              />
             </View>
 
-            <Modalize
-                ref={modalizeRef}
-                snapPoint={modalHeight}
-                modalHeight={!showModalAvatar ? modalHeight : windowHeight}
-            >
-                {showModalAvatar ?
-                    <AvatarSelection modalConfigOptions={modalConfigOptions} />
-                    :
-                    <ModalUpdateWeight modalConfigOptions={modalConfigOptions} />
-                }
-            </Modalize>
+            <View style={GlobalStyle.formField}>
+              <Text style={GlobalStyle.label}>Altura</Text>
+              <Input
+                name="height"
+                style={GlobalStyle.input}
+                keyboardType="decimal-pad"
+              />
+            </View>
 
-            <AlertSnackBar config={alertSnackBarProp} />
-        </>
-    );
-}
+            <View style={styles.boxUpdateWeight}>
+              <Text style={styles.labelBoxUpdateWeight}>Atualizar Peso</Text>
+
+              <RectButton
+                style={styles.buttonUpdateWeight}
+                onPress={() => onOpen()}
+              >
+                <Text
+                  style={styles.buttonUpdateWeightText}
+                  allowFontScaling={false}
+                >
+                  {member.currentWeight || member.startingWeight}Kg
+                </Text>
+              </RectButton>
+            </View>
+          </View>
+        </Form>
+
+        <GradientButton
+          height={60}
+          title="Salvar"
+          nameIcon="account-check-outline"
+          onPress={() => formRef.current?.submitForm()}
+        />
+      </View>
+
+      <Modalize
+        ref={modalizeRef}
+        snapPoint={modalHeight}
+        modalHeight={!showModalAvatar ? modalHeight : windowHeight}
+      >
+        {showModalAvatar ? (
+          <AvatarSelection modalConfigOptions={modalConfigOptions} />
+        ) : (
+          <ModalUpdateWeight modalConfigOptions={modalConfigOptions} />
+        )}
+      </Modalize>
+
+      <AlertSnackBar config={alertSnackBarProp} />
+    </>
+  );
+};
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 24,
-        justifyContent: 'space-between',
-    },
+  container: {
+    flex: 1,
+    padding: 24,
+    justifyContent: "space-between",
+  },
 
-    boxUserInfo: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
+  boxUserInfo: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
 
-    buttonPayDay: {
-        paddingVertical: 2,
-        paddingHorizontal: 12,
-        borderRadius: 25,
-        marginVertical: 12,
-        backgroundColor: Colors.colorDangerLight,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
+  buttonPayDay: {
+    paddingVertical: 2,
+    paddingHorizontal: 12,
+    borderRadius: 25,
+    marginVertical: 12,
+    backgroundColor: Colors.colorDangerLight,
+    justifyContent: "center",
+    alignItems: "center",
+  },
 
-    buttonPayDayText: {
-        color: '#FFF',
-        fontSize: 12
-    },
+  buttonPayDayText: {
+    color: "#FFF",
+    fontSize: 12,
+  },
 
-    defaltText: {
-        color: '#FFF',
-        marginVertical: 2
-    },
+  defaltText: {
+    color: "#FFF",
+    marginVertical: 2,
+  },
 
-    avatarImage: {
-        width: 100,
-        height: 100,
-        marginRight: 24,
-        borderRadius: 50,
+  avatarImage: {
+    width: 100,
+    height: 100,
+    marginRight: 24,
+    borderRadius: 50,
 
-        borderWidth: 8,
-        borderColor: Colors.textLight
-    },
+    borderWidth: 8,
+    borderColor: Colors.textLight,
+  },
 
-    separator: {
-        borderBottomColor: Colors.bgDarkSecondary,
-        borderWidth: 2,
-        marginVertical: 24,
-        marginHorizontal: 42
-    },
+  separator: {
+    borderBottomColor: Colors.bgDarkSecondary,
+    borderWidth: 2,
+    marginVertical: 24,
+    marginHorizontal: 42,
+  },
 
-    boxUpdateWeight: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginVertical: 18
-    },
+  boxUpdateWeight: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginVertical: 18,
+  },
 
-    buttonUpdateWeight: {
-        height: 34,
-        width: 100,
-        borderRadius: 25,
-        backgroundColor: Colors.colorDanger,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
+  buttonUpdateWeight: {
+    height: 34,
+    width: 100,
+    borderRadius: 25,
+    backgroundColor: Colors.colorDanger,
+    justifyContent: "center",
+    alignItems: "center",
+  },
 
-    buttonUpdateWeightText: {
-        color: "#FFF",
-        fontSize: 22,
-    },
+  buttonUpdateWeightText: {
+    color: "#FFF",
+    fontSize: 22,
+  },
 
-    labelBoxUpdateWeight: {
-        marginBottom: 14,
-        color: "#FFF",
-    },
+  labelBoxUpdateWeight: {
+    marginBottom: 14,
+    color: "#FFF",
+  },
 
-    buttonText: {
-        flex: 1,
-        justifyContent: "center",
-        textAlign: "center",
-        color: "#FFF",
-        fontSize: 20,
-    },
+  buttonText: {
+    flex: 1,
+    justifyContent: "center",
+    textAlign: "center",
+    color: "#FFF",
+    fontSize: 20,
+  },
 });
 
 export default Profile;

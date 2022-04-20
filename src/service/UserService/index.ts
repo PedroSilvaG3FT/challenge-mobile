@@ -1,29 +1,28 @@
+import { USER_TYPE } from "../../constants/UserType";
 import api from "../api";
 
 export class UserService {
+  getAll() {
+    return api.get<any>(`user?userType=${USER_TYPE.challenge}`);
+  }
 
-    getAll() { 
-        return api.get<any>(`user`);
-    }
+  getById(id: number) {
+    return api.get<any>(`user/${id}`);
+  }
 
-    getById(id: number) {
-        return api.get<any>(`user/${id}`);
-    }
+  getByEmail(email: string) {
+    return api.get<any>(`user/email/${email}`);
+  }
 
-    getByEmail(email: string) {
-        return api.get<any>(`user/email/${email}`);
-    }
+  create(data: object) {
+    return api.post("user", data);
+  }
 
-    create(data: object) {
-        return api.post('user', data);
-    }
+  update(data: object) {
+    return api.put("user", data);
+  }
 
-    update(data: object) {
-        return api.put('user', data);
-    }
-
-    updatePassword(data: { password: string, userId: number }) {
-        return api.put('user/change-password', data)
-    }
-
+  updatePassword(data: { password: string; userId: number }) {
+    return api.put("user/change-password", data);
+  }
 }
